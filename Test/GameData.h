@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dinput.h>
-//#include "camera.h"
+#include "Camera.h"
 
 struct GameData
 {
@@ -12,5 +12,5 @@ struct GameData
 	unsigned char* m_keyboardState; //current state of the Keyboard
 	unsigned char* m_prevKeyboardState; //previous frame's state of the keyboard
 	DIMOUSESTATE* m_mouseState; //current state of the mouse
-	//Camera* m_currentCam;
+	Camera* m_currentCam;
 };

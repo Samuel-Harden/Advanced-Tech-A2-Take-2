@@ -5,7 +5,7 @@ TPSCamera::TPSCamera(float _fieldOfView, float _aspectRatio, float _nearPlaneDis
 	:Camera(_fieldOfView, _aspectRatio, _nearPlaneDistance, _farPlaneDistance, _up)
 {
 	m_targetObject = _target;
-	m_dpos = { _dpos.x, _dpos.y, _dpos.z };
+	m_dpos = _dpos;
 }
 
 TPSCamera::~TPSCamera()
@@ -38,13 +38,15 @@ void TPSCamera::tick(GameData* _GD)
 		}
 	}*/
 
-	DirectX::XMVECTOR pos, target_pos;
+	DirectX::XMVECTOR pos, target_pos, dpos;
+
+	dpos = {m_dpos.x, m_dpos.y, m_dpos.z};
 
 	pos = {m_pos.x, m_pos.y, m_pos.z};
 	target_pos = { m_targetObject->getPos().x, m_targetObject->getPos().y, m_targetObject->getPos().z };
 
 	// Sets the positon of the camera
-	pos = DirectX::XMVectorAdd(target_pos, DirectX::XMVector3Transform(m_dpos, rotCam));
+	pos = DirectX::XMVectorAdd(target_pos, DirectX::XMVector3Transform(dpos, rotCam));
 
 	DirectX::XMStoreFloat3(&m_pos, pos);
 
@@ -57,7 +59,7 @@ void TPSCamera::tick(GameData* _GD)
 
 
 
-/*void TPSCamera::increaseZoom()
+void TPSCamera::increaseZoom()
 {
 	m_dpos.z -= 10.0f;
 
@@ -77,4 +79,21 @@ void TPSCamera::decreaseZoom()
 	{
 		m_dpos.z = 250.0f;
 	}
-}*/
+}
+
+
+void TPSCamera::allowRotation(GameData* _GD)
+{
+	m_yaw -= 0.01f * _GD->m_mouseState->lX;
+	m_pitch -= 0.01f * _GD->m_mouseState->lY;
+
+	// Limit camera rotation
+	if (m_pitch > 1.0f)
+	{
+		m_pitch = 1.0f;
+	}
+	if (m_pitch < -1.0f)
+	{
+		m_pitch = -1.0f;
+	}
+}

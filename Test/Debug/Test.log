@@ -1,3 +1,33 @@
-﻿  main.cpp
-c:\users\samuel\source\repos\test\test\main.cpp(8): error C2731: 'WinMain': function cannot be overloaded
-  c:\users\samuel\source\repos\test\test\main.cpp(7): note: see declaration of 'WinMain'
+﻿  compilation object save succeeded; see D:\Documents\GitHub\Advanced-Tech-A2-Take-2\Test\PixelShader.cso
+  compilation object save succeeded; see D:\Documents\GitHub\Advanced-Tech-A2-Take-2\Test\VertexShader.cso
+  VBGO.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+d:\documents\github\advanced-tech-a2-take-2\test\vbgo.cpp(210): warning C4316: 'ConstantBuffer': object allocated on the heap may not be aligned 16
+  TPSCamera.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  SwarmBot.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  main.cpp
+  Light.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  InputHandler.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  GameObject.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Game.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(44): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(45): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(51): warning C4316: 'Light': object allocated on the heap may not be aligned 16
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(53): warning C4316: 'SwarmBot': object allocated on the heap may not be aligned 16
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(57): warning C4316: 'SwarmBot': object allocated on the heap may not be aligned 16
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(62): warning C4316: 'TPSCamera': object allocated on the heap may not be aligned 16
+  Camera.cpp
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Application.cpp
+  Generating Code...
+InputHandler.obj : error LNK2019: unresolved external symbol _DirectInput8Create@20 referenced in function "public: __thiscall InputHandler::InputHandler(struct HWND__ * &,struct HINSTANCE__ * &)" (??0InputHandler@@QAE@AAPAUHWND__@@AAPAUHINSTANCE__@@@Z)
+InputHandler.obj : error LNK2001: unresolved external symbol _IID_IDirectInput8A
+InputHandler.obj : error LNK2001: unresolved external symbol _GUID_SysKeyboard
+InputHandler.obj : error LNK2001: unresolved external symbol _c_dfDIKeyboard
+D:\Documents\GitHub\Advanced-Tech-A2-Take-2\Debug\Test.exe : fatal error LNK1120: 4 unresolved externals

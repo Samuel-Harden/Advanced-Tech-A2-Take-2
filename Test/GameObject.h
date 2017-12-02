@@ -2,10 +2,11 @@
 
 #include<DirectXMath.h>
 
-#include "GameData.h"
-#include "DrawData.h"
 #include "SimpleMathAid.h"
 
+class Camera;
+struct GameData;
+struct DrawData;
 
 class GameObject
 {
@@ -17,8 +18,7 @@ public:
 	DirectX::XMFLOAT3 getPos() const;
 
 	virtual void tick(GameData* _game_data);
-	virtual void draw(DrawData* _draw_data);
-	//virtual void draw() = 0;
+	virtual void draw(DrawData* _draw_data) = 0;
 
 	// Getters
 	float getYaw() const;
@@ -27,6 +27,7 @@ public:
 
 	// Setters
 	void setPos(DirectX::XMFLOAT3 _pos);
+	void setPos(float _x, float _y, float _z);
 
 	void setScale(float _scale);
 	void setScale(float _x, float _y, float _z);

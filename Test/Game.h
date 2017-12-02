@@ -3,7 +3,7 @@
 #include <d3d11.h>
 #include <windows.h>
 #include <list>
-#include "Effects.h"
+#include <memory>
 
 
 using std::list;
@@ -16,6 +16,8 @@ class Light;
 
 struct GameData;
 struct DrawData;
+
+class InputHandler;
 
 class Game
 {
@@ -36,8 +38,7 @@ protected:
 	GameData* m_GD;			//Data to be shared to all Game Objects as they are ticked
 	DrawData* m_DD;			//Data to be shared to all Game Objects as they are drawn
 	
-	//Tick functions for each state
-	//void PlayTick();
+	std::unique_ptr<InputHandler> input_handler;
 
 	SwarmBot* bot_cam;
 	SwarmBot* bot;

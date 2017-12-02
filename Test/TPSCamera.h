@@ -17,7 +17,9 @@ public:
 	void increaseZoom();
 	void decreaseZoom();
 
+	void allowRotation(GameData* _GD);
+
 protected:
 	GameObject*	m_targetObject; //I'm following this object
-	DirectX::XMVECTOR m_dpos; //I'll lurk this far behind and away from it
+	DirectX::XMFLOAT3 m_dpos; //I'll lurk this far behind and away from it
 };

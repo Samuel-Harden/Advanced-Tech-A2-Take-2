@@ -1,14 +1,15 @@
 #include "Game.h"
-//DXTK headers
 
-//system headers
+// system headers
 #include <windows.h>
 #include <time.h>
 #include <iostream>
 
-//our headers
+// my headers
 #include "GameData.h"
 #include "DrawData.h"
+
+#include "InputHandler.h"
 
 #include "SwarmBot.h"
 #include "TPSCamera.h"
@@ -17,7 +18,7 @@
 
 Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 {
-	// Create DirectXTK spritebatch stuff
+
 	ID3D11DeviceContext* pd3dImmediateContext;
 	_pd3dDevice->GetImmediateContext(&pd3dImmediateContext);
 
@@ -25,7 +26,6 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	// Seed the random number generator
 	srand((UINT)time(NULL));
 
-	// Direct Input Stuff
 	m_hWnd = _hWnd;
 
 	m_GD = new GameData;
@@ -43,6 +43,13 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	screenWidth = width;
 	screenHeight = height;
+
+	input_handler = std::make_unique <InputHandler>(_hWnd, _hInstance);
+
+	// Set GameData struct and populate its pointers
+	m_GD->m_keyboardState = &input_handler->getKeyboardState();
+	m_GD->m_prevKeyboardState = &input_handler->getPreviousKeyboardState();
+	m_GD->m_mouseState = &input_handler->getMouseState();
 
 	//create a base light
 	m_light = new Light(XMFLOAT3(220.0f, 220.0f, 220.0f),
@@ -92,35 +99,29 @@ Game::~Game()
 
 bool Game::Tick()
 {
+	//Poll Keyboard
+	input_handler->readKeyboard();
+
+	// Poll Mouse
+	input_handler->readMouse();
+
+	if (input_handler->Tick(m_GD, m_camera) == false)
+	{
+		// if False exit the application
+		return false;
+	}
+
 	m_camera->tick(m_GD);
 	m_light->tick(m_GD);
 
 	bot_cam->tick();
 	bot->tick();
 
-	// Testing Movement...
-	XMFLOAT3 pos = bot_cam->getPos();
-
-	if (pos.x > 12.0f)
-	{
-		pos.x = -12.0f;
-	}
-	pos.x += 0.001f;
-	bot_cam->setPos(pos);
-	// End Testing...
-
-	//Poll Keyboard
-	//m_inputHandler->readKeyboard();
-
-	// Poll Mouse
-	//m_inputHandler->readMouse();
-
-	/*
 	//calculate frame time-step dt for passing down to game objects
 	DWORD currentTime = GetTickCount();
 	m_GD->m_dt = min((float)(currentTime - m_playTime) / 1000.0f, 0.1f);
 	m_playTime = currentTime;
-	*/
+
 	return true;
 }
 
@@ -130,6 +131,8 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 {
 	//set immediate context of the graphics device
 	m_DD->m_pd3dImmediateContext = _pd3dImmediateContext;
+
+	m_DD->m_cam = m_camera;
 
 	//update the constant buffer for the rendering of VBGOs
 	VBGO::UpdateConstantBuffer(m_DD);

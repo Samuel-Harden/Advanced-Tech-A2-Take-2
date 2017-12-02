@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "GameData.h"
 
 
 GameObject::GameObject()
@@ -77,6 +78,14 @@ float GameObject::getRoll() const
 void GameObject::setPos(DirectX::XMFLOAT3 _pos)
 {
 	m_pos = _pos;
+}
+
+
+void GameObject::setPos(float _x, float _y, float _z)
+{
+	m_pos.x = _x;
+	m_pos.y = _y;
+	m_pos.z = _z;
 }
 
 
