@@ -19,6 +19,21 @@
     <Filter Include="Header Files\Objects">
       <UniqueIdentifier>{9c485d49-5578-46a4-836a-c82ac609a4ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Data">
+      <UniqueIdentifier>{e53c8a68-8a06-43ac-b092-00af5ef7ecd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Swarm">
+      <UniqueIdentifier>{ceff076d-b06a-471c-811c-8309c9ced45c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swarm">
+      <UniqueIdentifier>{e662a810-1f1a-44d6-bdef-67a174b5909b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Swarm\Behaviours">
+      <UniqueIdentifier>{5a5ed7c4-a22a-4f29-9cb9-623b88a8670c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swarm\Behaviours">
+      <UniqueIdentifier>{ec94ef53-e04a-4557-ae2e-dc069bf38003}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,14 +57,29 @@
     <ClCompile Include="TPSCamera.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="SwarmBot.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SwarmBot.cpp">
+      <Filter>Source Files\Swarm</Filter>
+    </ClCompile>
+    <ClCompile Include="SwarmManager.cpp">
+      <Filter>Source Files\Swarm</Filter>
+    </ClCompile>
+    <ClCompile Include="SwarmBotData.cpp">
+      <Filter>Source Files\Swarm</Filter>
+    </ClCompile>
+    <ClCompile Include="Behaviour.cpp">
+      <Filter>Source Files\Swarm\Behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="Separation.cpp">
+      <Filter>Source Files\Swarm\Behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="PathFinding.cpp">
+      <Filter>Source Files\Swarm\Behaviours</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,17 +89,8 @@
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMathAid.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VBGO.h">
       <Filter>Header Files\Objects</Filter>
@@ -86,14 +107,38 @@
     <ClInclude Include="TPSCamera.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="SwarmBot.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawData.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SwarmBot.h">
+      <Filter>Header Files\Swarm</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMathAid.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SwarmManager.h">
+      <Filter>Header Files\Swarm</Filter>
+    </ClInclude>
+    <ClInclude Include="SwarmBotData.h">
+      <Filter>Header Files\Swarm</Filter>
+    </ClInclude>
+    <ClInclude Include="Behaviour.h">
+      <Filter>Header Files\Swarm\Behaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="Separation.h">
+      <Filter>Header Files\Swarm\Behaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFinding.h">
+      <Filter>Header Files\Swarm\Behaviours</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

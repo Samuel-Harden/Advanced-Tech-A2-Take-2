@@ -5,6 +5,7 @@
 #include <vector>
 
 class Behaviour;
+class SwarmBotData;
 class PositionCheck;
 
 
@@ -18,10 +19,15 @@ public:
 	//initialise the Veretx and Index buffers for the Boid
 	void init(ID3D11Device* _GD);
 
-	void tick();
-	void run();
+	void tick(SwarmBotData* _SBD);
+	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos);
 
-	DirectX::XMVECTOR getVelocity() const;
+	bool GetIsActive();
+
+	DirectX::XMFLOAT3 getVelocity() const;
+
+	void setWayPointID(int& _newWayPoint);
+	int getWayPointID() const;
 
 protected:
 
@@ -30,9 +36,17 @@ protected:
 
 private:
 
+	void setRandPos();
+	float randomFloat(float _min, float _max);
+
+	void applyForce(XMFLOAT3& force);
+
 	// Variables
 	bool newPos;
 
-	DirectX::XMVECTOR velocity;
-	DirectX::XMVECTOR acceleration;
+	bool is_active;
+	int wayPointID;
+
+	DirectX::XMFLOAT3 velocity;
+	DirectX::XMFLOAT3 acceleration;
 };

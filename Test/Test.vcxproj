@@ -122,18 +122,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Behaviour.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PathFinding.cpp" />
+    <ClCompile Include="Separation.cpp" />
     <ClCompile Include="SwarmBot.cpp" />
+    <ClCompile Include="SwarmBotData.cpp" />
+    <ClCompile Include="SwarmManager.cpp" />
     <ClCompile Include="TPSCamera.cpp" />
     <ClCompile Include="VBGO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Behaviour.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DrawData.h" />
@@ -142,8 +148,12 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="PathFinding.h" />
+    <ClInclude Include="Separation.h" />
     <ClInclude Include="SimpleMathAid.h" />
     <ClInclude Include="SwarmBot.h" />
+    <ClInclude Include="SwarmBotData.h" />
+    <ClInclude Include="SwarmManager.h" />
     <ClInclude Include="TPSCamera.h" />
     <ClInclude Include="VBGO.h" />
     <ClInclude Include="Vertex.h" />

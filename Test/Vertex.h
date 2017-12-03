@@ -1,7 +1,4 @@
 #pragma once
-//=================================================================
-// default Vertex Structure used by the VBGO render system
-//=================================================================
 
 #include <d3d11_1.h>
 #include <DirectXMath.h>

@@ -12,6 +12,7 @@
 #include "InputHandler.h"
 
 #include "SwarmBot.h"
+#include "SwarmManager.h"
 #include "TPSCamera.h"
 #include "Light.h"
 
@@ -59,10 +60,6 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	bot_cam->init(_pd3dDevice);
 	bot_cam->setPos({0.0f, 0.0f, 0.0f});
 
-	bot = new SwarmBot();
-	bot->init(_pd3dDevice);
-	bot->setPos({ 5.0f, 5.0f, 0.0f });
-
 	m_camera = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, bot_cam,
 		DirectX::Vector3Up, XMFLOAT3{0.0f, 5.0f, -60.0f});
 	
@@ -71,6 +68,8 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_DD->m_pd3dImmediateContext = nullptr;
 	m_DD->m_cam = m_camera;
 	m_DD->m_light = m_light;
+
+	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 200);
 
 	//lock the cursor to the centre of the window
 	RECT window;
@@ -114,8 +113,7 @@ bool Game::Tick()
 	m_camera->tick(m_GD);
 	m_light->tick(m_GD);
 
-	bot_cam->tick();
-	bot->tick();
+	swarm_manager->Tick(m_GD);
 
 	//calculate frame time-step dt for passing down to game objects
 	DWORD currentTime = GetTickCount();
@@ -137,8 +135,9 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 	//update the constant buffer for the rendering of VBGOs
 	VBGO::UpdateConstantBuffer(m_DD);
 
-	bot->draw(m_DD);
-	bot_cam->draw(m_DD);
+	//bot_cam->draw(m_DD);
+
+	swarm_manager->Draw(m_DD);
 
 
 	m_light->draw(m_DD);

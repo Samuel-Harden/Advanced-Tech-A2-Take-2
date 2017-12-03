@@ -3,6 +3,7 @@
 
 #define DESTROY( x ) if( x ){ x->Release(); x = nullptr;}
 
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
@@ -52,9 +53,7 @@ HRESULT Application::InitWindow(HINSTANCE _hInstance, int _nCmdShow)
 	return S_OK;
 }
 
-//--------------------------------------------------------------------------------------
-// Create Direct3D device and swap chain
-//--------------------------------------------------------------------------------------
+
 HRESULT Application::InitDevice()
 {
 	HRESULT hr = S_OK;
@@ -258,9 +257,9 @@ HRESULT Application::InitDevice()
 	//use the raster state
 	m_pImmediateContext->RSSetState(m_pRasterState);
 
-	m_ClearColour[0] = 0.0f;
-	m_ClearColour[1] = 0.0f;
-	m_ClearColour[2] = 0.8f;
+	m_ClearColour[0] = 1.0f;
+	m_ClearColour[1] = 1.0f;
+	m_ClearColour[2] = 1.0f;
 	m_ClearColour[3] = 1.0f;
 
 
@@ -271,9 +270,6 @@ HRESULT Application::InitDevice()
 }
 
 
-//--------------------------------------------------------------------------------------
-// Render the frame
-//--------------------------------------------------------------------------------------
 void Application::Render()
 {
 	// Just clear the backbuffer
@@ -289,9 +285,6 @@ void Application::Render()
 }
 
 
-//--------------------------------------------------------------------------------------
-// Update the Frame
-//--------------------------------------------------------------------------------------
 bool Application::Update()
 {
 	if (m_Game)
@@ -303,9 +296,6 @@ bool Application::Update()
 }
 
 
-//--------------------------------------------------------------------------------------
-// Clean up the objects we've created
-//--------------------------------------------------------------------------------------
 void Application::CleanupDevice()
 {
 	//Destroy the Game instance

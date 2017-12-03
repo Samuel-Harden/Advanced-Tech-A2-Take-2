@@ -11,6 +11,7 @@ using std::list;
 //using namespace DirectX;
 
 class SwarmBot;
+class SwarmManager;
 class TPSCamera;
 class Light;
 
@@ -39,6 +40,8 @@ protected:
 	DrawData* m_DD;			//Data to be shared to all Game Objects as they are drawn
 	
 	std::unique_ptr<InputHandler> input_handler;
+
+	std::unique_ptr<SwarmManager> swarm_manager;
 
 	SwarmBot* bot_cam;
 	SwarmBot* bot;

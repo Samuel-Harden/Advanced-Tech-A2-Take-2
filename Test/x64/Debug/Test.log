@@ -1,20 +1,5 @@
-﻿  VBGO.cpp
-  TPSCamera.cpp
+﻿  Game.cpp
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  SwarmBot.cpp
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Light.cpp
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  InputHandler.cpp
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  GameObject.cpp
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Camera.cpp
-  Generating Code...
-  Compiling...
-  Game.cpp
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(44): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
 d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(45): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
-  Generating Code...
+d:\documents\github\advanced-tech-a2-take-2\test\game.cpp(46): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
   Test.vcxproj -> D:\Documents\GitHub\Advanced-Tech-A2-Take-2\x64\Debug\Test.exe

@@ -2,10 +2,6 @@
 
 #include "gameobject.h"
 
-//=================================================================
-//Base Camera Class
-//=================================================================
-
 struct GameData;
 
 class Camera : public GameObject
@@ -38,5 +34,4 @@ protected:
 
 	DirectX::XMFLOAT3 m_target;
 	DirectX::XMFLOAT3 m_up;
-
 };
