@@ -58,10 +58,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	bot_cam = new SwarmBot();
 	bot_cam->init(_pd3dDevice);
-	bot_cam->setPos({0.0f, 0.0f, 0.0f});
 
 	m_camera = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, bot_cam,
-		DirectX::Vector3Up, XMFLOAT3{0.0f, 5.0f, -60.0f});
+		DirectX::Vector3Up, XMFLOAT3{0.0f, 5.0f, -500.0f});
 	
 	//create DrawData struct and populate its pointers
 	m_DD = new DrawData;
@@ -69,7 +68,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_DD->m_cam = m_camera;
 	m_DD->m_light = m_light;
 
-	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 200);
+	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 10000);
+
+	bot_cam->setPos({ swarm_manager->GetZoneCenter(), swarm_manager->GetZoneCenter(), 0.0f });
 
 	//lock the cursor to the centre of the window
 	RECT window;

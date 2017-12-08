@@ -136,6 +136,7 @@
     <ClCompile Include="SwarmManager.cpp" />
     <ClCompile Include="TPSCamera.cpp" />
     <ClCompile Include="VBGO.cpp" />
+    <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="TPSCamera.h" />
     <ClInclude Include="VBGO.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Zone.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.fx">

@@ -14,7 +14,17 @@ SwarmBot::SwarmBot()
 	wayPointID(0),
 	acceleration(0.0f, 0.0f, 0.0f)
 {
-	setRandPos();
+
+}
+
+
+SwarmBot::SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos)
+	: is_active(true),
+	newPos(false),
+	wayPointID(0),
+	acceleration(0.0f, 0.0f, 0.0f)
+{
+	SetRandPos(_min_pos, _max_pos);
 }
 
 
@@ -47,17 +57,17 @@ void SwarmBot::init(ID3D11Device* GD)
 
 	m_vertices[vert].Color = color;
 	m_vertices[vert++].Pos = XMFLOAT3(-0.5f, -0.5f, 0.0f);
-	m_vertices[vert].Color = color; // BottomFace 
-	m_vertices[vert++].Pos = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 	m_vertices[vert].Color = color;
 	m_vertices[vert++].Pos = XMFLOAT3(0.5f, -0.5f, 0.0f);
+	m_vertices[vert].Color = color; // BottomFace 
+	m_vertices[vert++].Pos = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 
 	m_vertices[vert].Color = color;
 	m_vertices[vert++].Pos = XMFLOAT3(0.5f, -0.5f, 0.0f);
-	m_vertices[vert].Color = color; // FlatFace
-	m_vertices[vert++].Pos = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 	m_vertices[vert].Color = color;
 	m_vertices[vert++].Pos = XMFLOAT3(0.5f, 0.5f, 0.0f);
+	m_vertices[vert].Color = color; // FlatFace
+	m_vertices[vert++].Pos = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 
 	/*//calculate the normals for the basic lighting in the base shader
 	for (int i = 0; i<m_numPrims; i++)
@@ -172,18 +182,18 @@ DirectX::XMFLOAT3 SwarmBot::getVelocity() const
 }
 
 
-void SwarmBot::setRandPos()
+void SwarmBot::SetRandPos(XMFLOAT2 _min, XMFLOAT2 _max)
 {
 	// Set random starting positon, inside the Designated zone
-	float posX = randomFloat(-500, 500.0);
-	float posY = randomFloat(-500.0, 500.0);
-	float posZ = 0.0f;
+	float pos_x = RandomFloat(_min.x, _max.x);
+	float pos_y = RandomFloat(_min.y, _max.y);
+	float pos_z = 0.0f;
 
-	m_pos = XMFLOAT3(posX, posY, posZ);
+	m_pos = XMFLOAT3(pos_x, pos_y, pos_z);
 }
 
 
-float SwarmBot::randomFloat(float _min, float _max)
+float SwarmBot::RandomFloat(float _min, float _max)
 {
 	float r = (float)rand() / (float)RAND_MAX;
 	return _min + r * (_max - _min);

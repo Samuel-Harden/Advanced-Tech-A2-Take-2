@@ -14,13 +14,14 @@ class SwarmBot : public VBGO
 {
 public:
 	SwarmBot();
+	SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos);
 	virtual ~SwarmBot();
 
 	//initialise the Veretx and Index buffers for the Boid
 	void init(ID3D11Device* _GD);
 
 	void tick(SwarmBotData* _SBD);
-	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos);
+	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
 
 	bool GetIsActive();
 
@@ -36,8 +37,8 @@ protected:
 
 private:
 
-	void setRandPos();
-	float randomFloat(float _min, float _max);
+	void SetRandPos(XMFLOAT2 _min, XMFLOAT2 _max);
+	float RandomFloat(float _min, float _max);
 
 	void applyForce(XMFLOAT3& force);
 

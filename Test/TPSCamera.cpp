@@ -61,11 +61,11 @@ void TPSCamera::tick(GameData* _GD)
 
 void TPSCamera::increaseZoom()
 {
-	m_dpos.z -= 10.0f;
+	m_dpos.z += 20.0f;
 
-	if (m_dpos.z < 50.0f)
+	if (m_dpos.z > -200.0f)
 	{
-		m_dpos.z = 50.0f;
+		m_dpos.z = -200.0f;
 	}
 }
 
@@ -73,11 +73,11 @@ void TPSCamera::increaseZoom()
 
 void TPSCamera::decreaseZoom()
 {
-	m_dpos.z += 10.0f;
+	m_dpos.z -= 20.0f;
 
-	if (m_dpos.z > 250.0f)
+	if (m_dpos.z < -1000.0f)
 	{
-		m_dpos.z = 250.0f;
+		m_dpos.z = -1000.0f;
 	}
 }
 

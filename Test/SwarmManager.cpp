@@ -4,20 +4,24 @@
 #include "GameData.h"
 #include "DrawData.h"
 #include "SwarmBotData.h"
+#include "Zone.h"
 
 #include "Behaviour.h"
 #include "Separation.h"
 #include "PathFinding.h"
 
 
-SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots)
+SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots) :
+	no_zones(49),
+	grid_width(7),
+	grid_height(7)
 {
-	swarm_bots.reserve(_max_bots);
+	zones.reserve(no_zones), // 7 x 7 grid
 	waypoints.reserve(4);
 
-	GenerateWaypoints();
+	GenerateWaypoints(_max_bots);
 
-	GenerateBots(_pd3dDevice, _max_bots);
+	GenerateZones(_pd3dDevice, _max_bots);
 
 	GenerateBehaviours();
 	GenerateBotData();
@@ -32,26 +36,46 @@ SwarmManager::~SwarmManager()
 
 void SwarmManager::Tick(GameData* _game_data)
 {
-	UpdateBots();
+	UpdateZones();
 }
 
 
 void SwarmManager::Draw(DrawData* _draw_data)
 {
-	for (int i = 0; i < swarm_bots.size(); i++)
+	for (int i = 0; i < zones.size(); i++)
 	{
-		swarm_bots[i]->draw(_draw_data);
+		zones[i]->Draw(_draw_data);
 	}
 }
 
 
-void SwarmManager::GenerateBots(ID3D11Device* _pd3dDevice, const int& _max_bots)
+void SwarmManager::GenerateZones(ID3D11Device* _pd3dDevice, const int& _max_bots)
 {
-	for (int i = 0; i < _max_bots; i++)
+	XMFLOAT2 pos = Vector2Zero;
+
+	int no_bots = _max_bots / no_zones;
+
+	int zone_ID = 0;
+
+	float zone_size_x = max_area / grid_width;
+	float zone_size_y = max_area / grid_height;
+
+	XMFLOAT2 size = { zone_size_x, zone_size_y };
+
+	// Populate each zone
+	for (int i = 0; i < no_zones; i++)
 	{
-		bot = new SwarmBot();
-		bot->init(_pd3dDevice);
-		swarm_bots.push_back(bot);
+		zone = new Zone(_pd3dDevice, zone_ID, pos, size, no_bots);
+
+		zones.push_back(zone);
+		zone_ID++;
+		pos.x += zone_size_x;
+
+		if (pos.x >= max_area)
+		{
+			pos.x = 0.0f;
+			pos.y += zone_size_y;
+		}
 	}
 }
 
@@ -70,40 +94,53 @@ void SwarmManager::GenerateBotData()
 {
 	swarm_data = new SwarmBotData();
 
-	swarm_data->desiredSep = 2.5f;
+	swarm_data->desiredSep    =  2.5f;
 	swarm_data->bot_max_force = 0.02f;
-	swarm_data->bot_max_speed = 0.5f;
+	swarm_data->bot_max_speed =  0.5f;
 	swarm_data->neighbourDist = 10.0f;
-	swarm_data->pathWeight = -0.5f;
-	swarm_data->sepWeight = 1.0f;
+	swarm_data->pathWeight    = -0.5f;
+	swarm_data->sepWeight     =  1.0f;
 }
 
 
-void SwarmManager::GenerateWaypoints()
+void SwarmManager::GenerateWaypoints(int _max_bots)
 {
-	XMFLOAT3 pos_1 = {-50.0f, -50.0f, 0.0f};
+	max_area = _max_bots / 4;
+
+	// Create a 20% offset from the edge of the grid
+	float min_pos = max_area / 5;
+	float max_pos = max_area / 5 * 4;
+
+	XMFLOAT3 pos_1 = { min_pos, min_pos, 0.0f}; // Bottom Left
 	waypoints.push_back(pos_1);
 
-	XMFLOAT3 pos_2 = { 50.0f, -50.0f, 0.0f };
+	XMFLOAT3 pos_2 = { max_pos, max_pos, 0.0f };    // Top Right
 	waypoints.push_back(pos_2);
 
-	XMFLOAT3 pos_3 = { -50.0f, 50.0f, 0.0f };
+	XMFLOAT3 pos_3 = { min_pos, max_pos, 0.0f };    // Top left
 	waypoints.push_back(pos_3);
 
-	XMFLOAT3 pos_4 = { 50.0f, 50.0f, 0.0f };
+	XMFLOAT3 pos_4 = { max_pos, min_pos, 0.0f };    // Bottom Right
 	waypoints.push_back(pos_4);
 }
 
 
-void SwarmManager::UpdateBots()
+// needs updating to cycle through the zones
+void SwarmManager::UpdateZones()
 {
-	for (int i = 0; i < swarm_bots.size(); i++)
+	/*for (int i = 0; i < zones.size(); i++)
 	{
-		swarm_bots[i]->run(swarm_bots, swarm_data, swarm_behaviours, waypoints);
-	}
+		zones[i]->Run(zones, swarm_data, swarm_behaviours, waypoints);
+	}*/
 
-	for (int i = 0; i < swarm_bots.size(); i++)
+	for (int i = 0; i < zones.size(); i++)
 	{
-		swarm_bots[i]->tick(swarm_data);
+		zones[i]->Tick(swarm_data);
 	}
+}
+
+
+float SwarmManager::GetZoneCenter()
+{
+	return max_area / 2;
 }

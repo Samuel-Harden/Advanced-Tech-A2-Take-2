@@ -9,6 +9,7 @@
 struct GameData;
 struct DrawData;
 
+class Zone;
 class SwarmBot;
 class SwarmBotData;
 class Behaviour;
@@ -22,18 +23,18 @@ public:
 	void Tick(GameData* _game_data);
 	void Draw(DrawData* _draw_data);
 
+	float GetZoneCenter();
+
 protected:
 
 private:
 
-	void GenerateBots(ID3D11Device* _pd3dDevice, const int& _max_bots);
+	void GenerateZones(ID3D11Device* _pd3dDevice, const int& _max_bots);
 	void GenerateBehaviours();
-	void GenerateWaypoints();
+	void GenerateWaypoints(int _max_bots);
 	void GenerateBotData();
 
-	void UpdateBots();
-
-	std::vector<SwarmBot*> swarm_bots;
+	void UpdateZones();
 
 	SwarmBotData* swarm_data;
 
@@ -41,8 +42,20 @@ private:
 
 	std::vector<DirectX::XMFLOAT3> waypoints;
 
-	SwarmBot* bot;
+	Zone* zone;
+
+	// Waypoint positions
+	float max_area;
 
 	int no_waypoints;
 
+	// Vector containing vectors(bots in each zone)
+	std::vector<Zone*> zones;
+	int no_zones;
+
+	int grid_width;
+	int grid_height;
+
+	// the aim is too keep zomes below 250 (extra 250 as safety net)
+	const int max_bots_zone = 500;
 };

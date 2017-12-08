@@ -5,6 +5,8 @@
 // Base Vectors (Like Unity)
 namespace DirectX
 {
+	static const XMFLOAT2 Vector2Zero = { 0.0f,  0.0f };
+
 	static const XMFLOAT3 Vector3Zero = { 0.0f,  0.0f,  0.0f };
 	static const XMFLOAT3 Vector3One = { 1.0f,  1.0f,  1.0f };
 	static const XMFLOAT3 Vector3Up = { 0.0f,  1.0f,  0.0f };
