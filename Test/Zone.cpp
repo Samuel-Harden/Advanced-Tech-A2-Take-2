@@ -25,11 +25,20 @@ void Zone::GenerateBots(ID3D11Device* _pd3dDevice, int no_bots)
 	XMFLOAT2 min_pos = {zone_position.x, zone_position.y};
 	XMFLOAT2 max_pos = {zone_position.x + zone_size.x, zone_position.y + zone_size.y};
 
+	int waypoint = 0;
+
 	for (int j = 0; j < no_bots; j++)
 	{
-		bot = new SwarmBot(min_pos, max_pos);
+		bot = new SwarmBot(min_pos, max_pos, waypoint);
 		bot->Init(_pd3dDevice);
 		swarm_bots.push_back(bot);
+
+		waypoint++;
+
+		if (waypoint == 4)
+		{
+			waypoint = 0;
+		}
 	}
 }
 
@@ -40,9 +49,6 @@ void Zone::Tick(SwarmBotData* _SBD)
 	{
 		swarm_bots[i]->Tick(_SBD);
 	}
-
-	// Update all bots to new Zones if needed
-	//UpdateZone();
 }
 
 
@@ -57,6 +63,9 @@ void Zone::Run(SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, s
 
 void Zone::Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints)
 {
+	std::vector<SwarmBot*> swarm = _bots;
+
+
 
 
 	for (int i = 0; i < swarm_bots.size(); i++)

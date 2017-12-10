@@ -5,7 +5,6 @@
 #include "GameData.h"
 
 
-
 PathFinding::PathFinding()
 {
 
@@ -19,7 +18,6 @@ PathFinding::~PathFinding()
 }
 
 
-
 XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<XMFLOAT3>& _wpPos)
 {
 	XMFLOAT3 steer = Vector3Zero;
@@ -28,7 +26,7 @@ XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 	float d = Vector3Distance(_bot->GetPos(), _wpPos[_bot->GetWayPointID()]);
 
 	// if Boid is further than x away from waypoint
-	if (d > 50)
+	if (d > 100.0f)
 	{
 		XMFLOAT3 diff = Vector3Zero;
 		// Calculate vector pointing away from neighbour
@@ -52,7 +50,7 @@ XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 
 	}
 
-	if (d <= 50)
+	if (d <= 100.0f)
 	{
 		for (int i = 0; i < _wpPos.size(); i++)
 		{

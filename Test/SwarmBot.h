@@ -14,7 +14,7 @@ class SwarmBot : public VBGO
 {
 public:
 	SwarmBot();
-	SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos);
+	SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos, float _waypoint);
 	virtual ~SwarmBot();
 
 	//initialise the Veretx and Index buffers for the Boid

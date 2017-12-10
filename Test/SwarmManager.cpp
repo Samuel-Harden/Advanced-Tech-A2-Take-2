@@ -106,16 +106,16 @@ void SwarmManager::GenerateBotData()
 
 	swarm_data->desiredSep    =  2.5f;
 	swarm_data->bot_max_force = 0.02f;
-	swarm_data->bot_max_speed =  0.5f;
+	swarm_data->bot_max_speed =  1.5f;
 	swarm_data->neighbourDist = 10.0f;
 	swarm_data->pathWeight    = -0.5f;
-	swarm_data->sepWeight     =  1.0f;
+	swarm_data->sepWeight     =  10.0f;
 }
 
 
 void SwarmManager::GenerateWaypoints(int _max_bots)
 {
-	max_area = _max_bots / 10;
+	max_area = _max_bots / 40;
 
 	// Create a 20% offset from the edge of the grid
 	float min_pos = max_area / 5;
@@ -138,7 +138,19 @@ void SwarmManager::GenerateWaypoints(int _max_bots)
 // needs updating to cycle through the zones
 void SwarmManager::UpdateZones(int _zone)
 {
+	std::vector<int> update_zones;
+
+	SetZonesForUpdate(_zone, update_zones);
+
+	// Update this zone
 	zones[current_zone]->Run(swarm_data, swarm_behaviours, waypoints);
+
+	// Uodate surrounding zones
+	for (int i = 0; i < update_zones.size(); i++)
+	{
+		zones[current_zone]->Run(zones[update_zones[i]]->GetSwarm(), swarm_data, swarm_behaviours, waypoints);
+	}
+
 
 	for (int i = 0; i < zones.size(); i++)
 	{
@@ -147,6 +159,14 @@ void SwarmManager::UpdateZones(int _zone)
 }
 
 
+void SwarmManager::SetZonesForUpdate(int _zone, std::vector<int> _update_zones)
+{
+	// Get Zones surrounding the current zone
+
+}
+
+
+// Move bots to new zone if needed...
 void SwarmManager::UpdateBotPositions(int _zone)
 {
 	DirectX::XMFLOAT2 zone_pos = zones[_zone]->GetPos();

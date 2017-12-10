@@ -68,7 +68,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_DD->m_cam = m_camera;
 	m_DD->m_light = m_light;
 
-	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 10000);
+	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 20000);
 
 	bot_cam->SetPos({ swarm_manager->GetZoneCenter(), swarm_manager->GetZoneCenter(), 0.0f });
 

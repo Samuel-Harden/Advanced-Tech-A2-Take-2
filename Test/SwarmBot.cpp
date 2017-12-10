@@ -18,10 +18,10 @@ SwarmBot::SwarmBot()
 }
 
 
-SwarmBot::SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos)
+SwarmBot::SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos, float _waypoint)
 	: is_active(true),
 	newPos(false),
-	wayPointID(0),
+	wayPointID(_waypoint),
 	acceleration(0.0f, 0.0f, 0.0f)
 {
 	SetRandPos(_min_pos, _max_pos);

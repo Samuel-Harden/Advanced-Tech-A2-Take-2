@@ -75,9 +75,9 @@ void TPSCamera::DecreaseZoom()
 {
 	m_dpos.z -= 20.0f;
 
-	if (m_dpos.z < -1000.0f)
+	if (m_dpos.z < -1200.0f)
 	{
-		m_dpos.z = -1000.0f;
+		m_dpos.z = -1200.0f;
 	}
 }
 

@@ -36,6 +36,7 @@ private:
 	void UpdateZones(int _zone);
 
 	void UpdateBotPositions(int _zone);
+	void SetZonesForUpdate(int _zone, std::vector<int> _update_zones);
 
 	SwarmBotData* swarm_data;
 
