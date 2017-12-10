@@ -77,25 +77,19 @@ bool InputHandler::Tick(GameData* _GD, TPSCamera* _camera)
 		return false;
 	}
 
-	if ((m_keyboardState[DIK_B] & 0x80)/* &&
-									   !(m_prevKeyboardState[DIK_B] & 0x80)*/)
-	{
-		//_boidManager->spawnBoid();
-	}
-
 	if ((m_mouseState.rgbButtons[1] & 0x80))
 	{
-		_camera->allowRotation(_GD);
+		_camera->AllowRotation(_GD);
 	}
 
 	if ((-m_mouseState.lZ & 0X80))
 	{
-		_camera->increaseZoom();
+		_camera->IncreaseZoom();
 	}
 
 	if ((m_mouseState.lZ & 0X80))
 	{
-		_camera->decreaseZoom();
+		_camera->DecreaseZoom();
 	}
 
 	return true;

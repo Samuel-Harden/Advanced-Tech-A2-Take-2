@@ -18,17 +18,17 @@ public:
 	virtual ~SwarmBot();
 
 	//initialise the Veretx and Index buffers for the Boid
-	void init(ID3D11Device* _GD);
+	void Init(ID3D11Device* _GD);
 
-	void tick(SwarmBotData* _SBD);
-	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
+	void Tick(SwarmBotData* _SBD);
+	void Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
 
 	bool GetIsActive();
 
-	DirectX::XMFLOAT3 getVelocity() const;
+	DirectX::XMFLOAT3 GetVelocity() const;
 
-	void setWayPointID(int& _newWayPoint);
-	int getWayPointID() const;
+	void SetWayPointID(int& _newWayPoint);
+	int GetWayPointID() const;
 
 protected:
 
@@ -40,7 +40,7 @@ private:
 	void SetRandPos(XMFLOAT2 _min, XMFLOAT2 _max);
 	float RandomFloat(float _min, float _max);
 
-	void applyForce(XMFLOAT3& force);
+	void ApplyForce(XMFLOAT3& force);
 
 	// Variables
 	bool newPos;

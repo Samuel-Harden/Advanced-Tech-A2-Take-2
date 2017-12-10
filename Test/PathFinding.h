@@ -14,7 +14,7 @@ public:
 protected:
 	PathFinding();
 
-	DirectX::XMFLOAT3 calculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _wpPos) override;
+	DirectX::XMFLOAT3 CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _wpPos) override;
 
 private:
 

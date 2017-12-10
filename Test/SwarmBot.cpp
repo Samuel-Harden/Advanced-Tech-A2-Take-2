@@ -36,7 +36,7 @@ SwarmBot::~SwarmBot()
 
 
 
-void SwarmBot::init(ID3D11Device* GD)
+void SwarmBot::Init(ID3D11Device* GD)
 {
 	//calculate number of vertices and primatives
 	int numVerts = 6;
@@ -98,7 +98,7 @@ void SwarmBot::init(ID3D11Device* GD)
 
 
 
-void SwarmBot::tick(SwarmBotData* _SBD)
+void SwarmBot::Tick(SwarmBotData* _SBD)
 {
 	velocity.x = (velocity.x + acceleration.x);
 	velocity.y = (velocity.y + acceleration.y);
@@ -122,18 +122,16 @@ void SwarmBot::tick(SwarmBotData* _SBD)
 	XMMATRIX trans_mat = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
 	m_worldMat = scaleMat * m_rotMat * trans_mat;
-
-	acceleration = Vector3Zero;
 }
 
 
-void SwarmBot::run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
+void SwarmBot::Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
 {
 	using namespace DirectX;
 	// Behaviours...
-	XMFLOAT3 sep = _behaviours[0]->calculateBehaviour1(this, _swarm_data, _bots);    // Seperation
+	XMFLOAT3 sep = _behaviours[0]->CalculateBehaviour1(this, _swarm_data, _bots);    // Seperation
 
-	XMFLOAT3 pf = _behaviours[1]->calculateBehaviour3(this, _swarm_data, _wpPos);    // Path Finding
+	XMFLOAT3 pf = _behaviours[1]->CalculateBehaviour3(this, _swarm_data, _wpPos);    // Path Finding
 
 	sep.x *= _swarm_data->sepWeight;
 	sep.y *= _swarm_data->sepWeight;
@@ -143,13 +141,15 @@ void SwarmBot::run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std
 	pf.y *= _swarm_data->pathWeight;
 	pf.z *= _swarm_data->pathWeight;
 
+	acceleration = Vector3Zero;
+
 	// add these 'forces' to acceleration...
-	applyForce(sep);
-	applyForce(pf);
+	ApplyForce(sep);
+	ApplyForce(pf);
 }
 
 
-void SwarmBot::applyForce(XMFLOAT3& force)
+void SwarmBot::ApplyForce(XMFLOAT3& force)
 {
 	acceleration.x = (acceleration.x + force.x);
 	acceleration.y = (acceleration.y + force.y);
@@ -163,20 +163,20 @@ bool SwarmBot::GetIsActive()
 }
 
 
-void SwarmBot::setWayPointID(int& _newID)
+void SwarmBot::SetWayPointID(int& _newID)
 {
 	wayPointID = _newID;
 }
 
 
 
-int SwarmBot::getWayPointID() const
+int SwarmBot::GetWayPointID() const
 {
 	return wayPointID;
 }
 
 
-DirectX::XMFLOAT3 SwarmBot::getVelocity() const
+DirectX::XMFLOAT3 SwarmBot::GetVelocity() const
 {
 	return velocity;
 }

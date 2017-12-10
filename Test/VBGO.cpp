@@ -69,12 +69,12 @@ VBGO::~VBGO()
 	DESTROY(m_pRasterState);
 }
 
-void VBGO::tick(GameData* _game_data)
+void VBGO::Tick(GameData* _game_data)
 {
-	GameObject::tick(_game_data);
+	GameObject::Tick(_game_data);
 }
 
-void VBGO::draw(DrawData* _draw_data)
+void VBGO::Draw(DrawData* _draw_data)
 {
 	//set raster state
 	ID3D11RasterizerState* useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
@@ -253,7 +253,7 @@ void VBGO::UpdateConstantBuffer(DrawData* _draw_data)
 	if (_draw_data->m_light)
 	{
 	s_pCB->lightCol = _draw_data->m_light->GetColour();
-	s_pCB->lightPos = _draw_data->m_light->getPos();
+	s_pCB->lightPos = _draw_data->m_light->GetPos();
 	s_pCB->ambientCol = _draw_data->m_light->GetAmbCol();
 	}
 }

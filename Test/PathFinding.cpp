@@ -20,21 +20,21 @@ PathFinding::~PathFinding()
 
 
 
-XMFLOAT3 PathFinding::calculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<XMFLOAT3>& _wpPos)
+XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<XMFLOAT3>& _wpPos)
 {
 	XMFLOAT3 steer = Vector3Zero;
 	int count = 0;
 
-	float d = Vector3Distance(_bot->getPos(), _wpPos[_bot->getWayPointID()]);
+	float d = Vector3Distance(_bot->GetPos(), _wpPos[_bot->GetWayPointID()]);
 
-	// if Boid is further than 10 away from waypoint
-	if (d > 25)
+	// if Boid is further than x away from waypoint
+	if (d > 50)
 	{
 		XMFLOAT3 diff = Vector3Zero;
 		// Calculate vector pointing away from neighbour
-		diff.x = (_bot->getPos().x - (_wpPos[_bot->getWayPointID()].x));
-		diff.y = (_bot->getPos().y - (_wpPos[_bot->getWayPointID()].y));
-		diff.z = (_bot->getPos().z - (_wpPos[_bot->getWayPointID()].z));
+		diff.x = (_bot->GetPos().x - (_wpPos[_bot->GetWayPointID()].x));
+		diff.y = (_bot->GetPos().y - (_wpPos[_bot->GetWayPointID()].y));
+		diff.z = (_bot->GetPos().z - (_wpPos[_bot->GetWayPointID()].z));
 
 		XMVECTOR diff_vector = XMLoadFloat3(&diff);
 
@@ -52,11 +52,11 @@ XMFLOAT3 PathFinding::calculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 
 	}
 
-	if (d < 25)
+	if (d <= 50)
 	{
 		for (int i = 0; i < _wpPos.size(); i++)
 		{
-			if (_bot->getWayPointID() == i)
+			if (_bot->GetWayPointID() == i)
 			{
 				// Set new waypoint...
 				i++;
@@ -65,7 +65,7 @@ XMFLOAT3 PathFinding::calculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 				{
 					i = 0; // reset waypoint after the last one
 				}
-				_bot->setWayPointID(i); // assign next Waypoint...
+				_bot->SetWayPointID(i); // assign next Waypoint...
 				break;
 			}
 		}
@@ -85,7 +85,7 @@ XMFLOAT3 PathFinding::calculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 
 		steer_vector = (steer_vector * _SBD->bot_max_speed);
 
-		XMVECTOR velocity = XMLoadFloat3(&_bot->getVelocity());
+		XMVECTOR velocity = XMLoadFloat3(&_bot->GetVelocity());
 
 		steer_vector = (steer_vector - velocity);
 

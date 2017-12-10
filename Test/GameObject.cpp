@@ -23,7 +23,7 @@ GameObject::~GameObject()
 }
 
 
-void GameObject::tick(GameData* _game_data)
+void GameObject::Tick(GameData* _game_data)
 {
 
 	DirectX::FXMVECTOR scale = { m_scale.x, m_scale.y, m_scale.z };
@@ -37,51 +37,51 @@ void GameObject::tick(GameData* _game_data)
 }
 
 
-void GameObject::draw(DrawData* _draw_data)
+void GameObject::Draw(DrawData* _draw_data)
 {
 
 }
 
 
 // Getters
-DirectX::XMFLOAT3 GameObject::getScale() const
+DirectX::XMFLOAT3 GameObject::GetScale() const
 {
 	return m_scale;
 }
 
 
-DirectX::XMFLOAT3 GameObject::getPos() const
+DirectX::XMFLOAT3 GameObject::GetPos() const
 {
 	return m_pos;
 }
 
 
-float GameObject::getYaw() const
+float GameObject::GetYaw() const
 {
 	return m_yaw;
 }
 
 
-float GameObject::getPitch() const
+float GameObject::GetPitch() const
 {
 	return m_pitch;
 }
 
 
-float GameObject::getRoll() const
+float GameObject::GetRoll() const
 {
 	return m_roll;
 }
 
 
 // Setters
-void GameObject::setPos(DirectX::XMFLOAT3 _pos)
+void GameObject::SetPos(DirectX::XMFLOAT3 _pos)
 {
 	m_pos = _pos;
 }
 
 
-void GameObject::setPos(float _x, float _y, float _z)
+void GameObject::SetPos(float _x, float _y, float _z)
 {
 	m_pos.x = _x;
 	m_pos.y = _y;
@@ -89,7 +89,7 @@ void GameObject::setPos(float _x, float _y, float _z)
 }
 
 
-void GameObject::setScale(float _scale)
+void GameObject::SetScale(float _scale)
 {
 	m_scale.x = _scale * 1;
 	m_scale.y = _scale * 1;
@@ -97,7 +97,7 @@ void GameObject::setScale(float _scale)
 }
 
 
-void GameObject::setScale(float _x, float _y, float _z)
+void GameObject::SetScale(float _x, float _y, float _z)
 {
 	m_scale.x = _x;
 	m_scale.y = _y;
@@ -105,31 +105,31 @@ void GameObject::setScale(float _x, float _y, float _z)
 }
 
 
-void GameObject::setScale(DirectX::XMFLOAT3 _scale)
+void GameObject::SetScale(DirectX::XMFLOAT3 _scale)
 {
 	m_scale = _scale;
 }
 
 
-void GameObject::setPitch(float _pitch)
+void GameObject::SetPitch(float _pitch)
 {
 	m_pitch = _pitch;
 }
 
 
-void GameObject::setYaw(float _yaw)
+void GameObject::SetYaw(float _yaw)
 {
 	m_yaw = _yaw;
 }
 
 
-void GameObject::setRoll(float _roll)
+void GameObject::SetRoll(float _roll)
 {
 	m_roll = _roll;
 }
 
 
-void GameObject::setPitchYawRoll(float _pitch, float _yaw, float _roll)
+void GameObject::SetPitchYawRoll(float _pitch, float _yaw, float _roll)
 {
 	m_pitch = _pitch;
 	m_yaw = _yaw;

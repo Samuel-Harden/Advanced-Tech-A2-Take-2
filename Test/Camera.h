@@ -10,9 +10,9 @@ public:
 	Camera(float _fieldOfView, float _aspectRatio, float _nearPlaneDistance, float _farPlaneDistance, DirectX::XMFLOAT3 _up = DirectX::Vector3Up, DirectX::XMFLOAT3 _target = DirectX::Vector3Zero);
 	~Camera();
 
-	virtual void tick(GameData* _GD) override;
+	virtual void Tick(GameData* _GD) override;
 
-	virtual void draw(DrawData* _DD) override;
+	virtual void Draw(DrawData* _DD) override;
 
 	//Getters
 	DirectX::XMMATRIX getProjMatrix();

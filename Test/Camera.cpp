@@ -20,7 +20,7 @@ Camera::~Camera()
 }
 
 
-void Camera::tick(GameData* _GD)
+void Camera::Tick(GameData* _GD)
 {
 	DirectX::XMVECTOR pos, target, up;
 
@@ -31,11 +31,11 @@ void Camera::tick(GameData* _GD)
 	m_projMat = DirectX::XMMatrixPerspectiveFovLH(m_fieldOfView, m_aspectRatio, m_nearPlaneDistance, m_farPlaneDistance);
 	
 	m_viewMat = DirectX::XMMatrixLookAtLH(pos, target, up);
-	GameObject::tick(_GD);
+	GameObject::Tick(_GD);
 }
 
 
-void Camera::draw(DrawData* _DD)
+void Camera::Draw(DrawData* _DD)
 {
 	//standard camera doesn't draw ANYTHING
 }

@@ -14,7 +14,7 @@ public:
 protected:
 	Separation();
 
-	DirectX::XMFLOAT3 calculateBehaviour1(SwarmBot* _bot, SwarmBotData* _BD, std::vector<SwarmBot*>& _bots) override;
+	DirectX::XMFLOAT3 CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* _BD, std::vector<SwarmBot*>& _bots) override;
 
 private:
 

@@ -57,10 +57,10 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.4f, 0.1f, 0.1f, 1.0f));
 
 	bot_cam = new SwarmBot();
-	bot_cam->init(_pd3dDevice);
+	bot_cam->Init(_pd3dDevice);
 
 	m_camera = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, bot_cam,
-		DirectX::Vector3Up, XMFLOAT3{0.0f, 5.0f, -500.0f});
+		DirectX::Vector3Up, XMFLOAT3{0.0f, 0.0f, -500.0f});
 	
 	//create DrawData struct and populate its pointers
 	m_DD = new DrawData;
@@ -70,7 +70,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 
 	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 10000);
 
-	bot_cam->setPos({ swarm_manager->GetZoneCenter(), swarm_manager->GetZoneCenter(), 0.0f });
+	bot_cam->SetPos({ swarm_manager->GetZoneCenter(), swarm_manager->GetZoneCenter(), 0.0f });
 
 	//lock the cursor to the centre of the window
 	RECT window;
@@ -111,8 +111,8 @@ bool Game::Tick()
 		return false;
 	}
 
-	m_camera->tick(m_GD);
-	m_light->tick(m_GD);
+	m_camera->Tick(m_GD);
+	m_light->Tick(m_GD);
 
 	swarm_manager->Tick(m_GD);
 
@@ -141,6 +141,6 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 	swarm_manager->Draw(m_DD);
 
 
-	m_light->draw(m_DD);
-	m_camera->draw(m_DD);
+	m_light->Draw(m_DD);
+	m_camera->Draw(m_DD);
 };

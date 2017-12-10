@@ -28,7 +28,7 @@ void Zone::GenerateBots(ID3D11Device* _pd3dDevice, int no_bots)
 	for (int j = 0; j < no_bots; j++)
 	{
 		bot = new SwarmBot(min_pos, max_pos);
-		bot->init(_pd3dDevice);
+		bot->Init(_pd3dDevice);
 		swarm_bots.push_back(bot);
 	}
 }
@@ -38,7 +38,7 @@ void Zone::Tick(SwarmBotData* _SBD)
 {
 	for (int i = 0; i < swarm_bots.size(); i++)
 	{
-		swarm_bots[i]->tick(_SBD);
+		swarm_bots[i]->Tick(_SBD);
 	}
 
 	// Update all bots to new Zones if needed
@@ -46,11 +46,22 @@ void Zone::Tick(SwarmBotData* _SBD)
 }
 
 
-void Zone::Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints)
+void Zone::Run(SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints)
 {
 	for (int i = 0; i < swarm_bots.size(); i++)
 	{
-		swarm_bots[i]->run(swarm_bots, _swarm_data, _behaviours, _waypoints);
+		swarm_bots[i]->Run(swarm_bots, _swarm_data, _behaviours, _waypoints);
+	}
+}
+
+
+void Zone::Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints)
+{
+
+
+	for (int i = 0; i < swarm_bots.size(); i++)
+	{
+		swarm_bots[i]->Run(swarm_bots, _swarm_data, _behaviours, _waypoints);
 	}
 }
 
@@ -59,7 +70,7 @@ void Zone::Draw(DrawData* _draw_data)
 {
 	for (int i = 0; i < swarm_bots.size(); i++)
 	{
-		swarm_bots[i]->draw(_draw_data);
+		swarm_bots[i]->Draw(_draw_data);
 	}
 }
 
@@ -73,4 +84,22 @@ void Zone::UpdateZone()
 XMFLOAT2 Zone::GetPos()
 {
 	return zone_position;
+}
+
+
+XMFLOAT2 Zone::GetSize()
+{
+	return zone_size;
+}
+
+
+std::vector<SwarmBot*> Zone::GetSwarm()
+{
+	return swarm_bots;
+}
+
+
+SwarmBot* Zone::GetBot(int _bot)
+{
+	return swarm_bots[_bot];
 }

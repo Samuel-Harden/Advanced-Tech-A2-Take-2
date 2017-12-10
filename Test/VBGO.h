@@ -15,8 +15,8 @@ public:
 	VBGO();
 	virtual ~VBGO();
 
-	virtual void tick(GameData* _GD) override;
-	virtual void draw(DrawData* _DD) override;
+	virtual void Tick(GameData* _GD) override;
+	virtual void Draw(DrawData* _DD) override;
 
 	//set up and then destroy all static default render stuff for VBGOs
 	static void Init(ID3D11Device* _GD);//Graphics Device NOT GameData

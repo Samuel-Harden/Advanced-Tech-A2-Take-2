@@ -1,5 +1,7 @@
 #include "SwarmManager.h"
 
+#include <iostream>
+
 #include "SwarmBot.h"
 #include "GameData.h"
 #include "DrawData.h"
@@ -12,9 +14,10 @@
 
 
 SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots) :
-	no_zones(49),
-	grid_width(7),
-	grid_height(7)
+	no_zones(36),
+	grid_width(6),
+	grid_height(6),
+	current_zone(0)
 {
 	zones.reserve(no_zones), // 7 x 7 grid
 	waypoints.reserve(4);
@@ -36,7 +39,14 @@ SwarmManager::~SwarmManager()
 
 void SwarmManager::Tick(GameData* _game_data)
 {
-	UpdateZones();
+	UpdateZones(current_zone);
+
+	current_zone++;
+
+	if (current_zone >= no_zones)
+	{
+		current_zone = 0;
+	}
 }
 
 
@@ -105,7 +115,7 @@ void SwarmManager::GenerateBotData()
 
 void SwarmManager::GenerateWaypoints(int _max_bots)
 {
-	max_area = _max_bots / 4;
+	max_area = _max_bots / 10;
 
 	// Create a 20% offset from the edge of the grid
 	float min_pos = max_area / 5;
@@ -126,16 +136,106 @@ void SwarmManager::GenerateWaypoints(int _max_bots)
 
 
 // needs updating to cycle through the zones
-void SwarmManager::UpdateZones()
+void SwarmManager::UpdateZones(int _zone)
 {
-	/*for (int i = 0; i < zones.size(); i++)
-	{
-		zones[i]->Run(zones, swarm_data, swarm_behaviours, waypoints);
-	}*/
+	zones[current_zone]->Run(swarm_data, swarm_behaviours, waypoints);
 
 	for (int i = 0; i < zones.size(); i++)
 	{
 		zones[i]->Tick(swarm_data);
+	}
+}
+
+
+void SwarmManager::UpdateBotPositions(int _zone)
+{
+	DirectX::XMFLOAT2 zone_pos = zones[_zone]->GetPos();
+	DirectX::XMFLOAT2 zone_size = zones[_zone]->GetSize();
+
+	// loop through all bots
+	for (int i = 0; i < zones[_zone]->GetSwarm().size(); i++)
+	{
+		//check if there is a bot in this pos
+		if (zones[_zone]->GetBot(i) != nullptr)
+		{
+			XMFLOAT3 bot_pos = zones[_zone]->GetBot(i)->GetPos();
+
+			// corners first
+
+			// is bot in the Zone DOWN and LEFT
+			if (bot_pos.x < zone_pos.x && bot_pos.y < zone_pos.y)
+			{
+				// Change Zone
+				std::cout << "im Down and Left" << std::endl;
+
+				return;
+			}
+
+			// is bot in the Zone DOWN and RIGHT
+			if (bot_pos.x >(zone_pos.x + zone_size.x) && bot_pos.y < zone_pos.y)
+			{
+				// Change Zone
+				std::cout << "im Down and Right" << std::endl;
+
+				return;
+			}
+
+			// is bot in the Zone UP and LEFT
+			if (bot_pos.x < zone_pos.x && bot_pos.y >(zone_pos.y + zone_size.y))
+			{
+				// Change Zone
+				std::cout << "im Up and Left" << std::endl;
+
+				return;
+			}
+
+			// is bot in the Zone UP and RIGHT
+			if (bot_pos.x > (zone_pos.x + zone_size.x) && bot_pos.y > (zone_pos.y + zone_size.y))
+			{
+				// Change Zone
+				std::cout << "im Up and Right" << std::endl;
+
+				return;
+			}
+
+			// is bot in the LEFT
+			if (bot_pos.x < zone_pos.x)
+			{
+				// Change Zone
+				std::cout << "im Left" << std::endl;
+
+				return;
+			}
+
+			// is bot in the RIGHT
+			if (bot_pos.x >(zone_pos.x + zone_size.x))
+			{
+				// Change Zone
+				std::cout << "im Right" << std::endl;
+
+				return;
+			}
+
+			// is bot in the Zone DOWN
+			if (bot_pos.y < zone_pos.y)
+			{
+				// Change Zone
+				std::cout << "im Down" << std::endl;
+
+				return;
+			}
+
+			// is bot in the Zone DOWN
+			if (bot_pos.y >(zone_pos.y + zone_size.y))
+			{
+				// Change Zone
+				std::cout << "im Up" << std::endl;
+
+				return;
+			}
+
+			// if none are true then the bots in the correct zone
+		}
 	}
 }
 

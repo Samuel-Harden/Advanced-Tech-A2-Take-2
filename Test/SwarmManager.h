@@ -33,8 +33,9 @@ private:
 	void GenerateBehaviours();
 	void GenerateWaypoints(int _max_bots);
 	void GenerateBotData();
+	void UpdateZones(int _zone);
 
-	void UpdateZones();
+	void UpdateBotPositions(int _zone);
 
 	SwarmBotData* swarm_data;
 
@@ -52,6 +53,7 @@ private:
 	// Vector containing vectors(bots in each zone)
 	std::vector<Zone*> zones;
 	int no_zones;
+	int current_zone;
 
 	int grid_width;
 	int grid_height;

@@ -20,6 +20,10 @@ public:
 	~Zone();
 
 	void Tick(SwarmBotData* _SBD);
+
+	void Run(SwarmBotData* _swarm_data,
+		std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints);
+
 	void Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data,
 		std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoints);
 	void Draw(DrawData* _draw_data);
@@ -27,6 +31,11 @@ public:
 	void UpdateZone();
 
 	XMFLOAT2 GetPos();
+	XMFLOAT2 GetSize();
+
+	SwarmBot* GetBot(int _bot);
+
+	std::vector<SwarmBot*> GetSwarm();
 
 protected:
 

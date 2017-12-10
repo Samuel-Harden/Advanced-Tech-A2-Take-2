@@ -18,9 +18,9 @@ public:
 	Light(XMFLOAT3 _pos, XMFLOAT4 _colour, XMFLOAT4 _ambientColour);
 	~Light();
 
-	virtual void draw(DrawData* _DD) override { _DD; }; //draws nothing
+	virtual void Draw(DrawData* _DD) override { _DD; }; //draws nothing
 
-	virtual void tick(GameData* _GD) override;
+	virtual void Tick(GameData* _GD) override;
 
 	//getters
 	XMFLOAT4 GetColour() { return m_colour; }

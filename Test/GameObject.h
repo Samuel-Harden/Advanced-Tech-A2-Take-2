@@ -14,29 +14,29 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	DirectX::XMFLOAT3 getScale() const;
-	DirectX::XMFLOAT3 getPos() const;
+	DirectX::XMFLOAT3 GetScale() const;
+	DirectX::XMFLOAT3 GetPos() const;
 
-	virtual void tick(GameData* _game_data);
-	virtual void draw(DrawData* _draw_data) = 0;
+	virtual void Tick(GameData* _game_data);
+	virtual void Draw(DrawData* _draw_data) = 0;
 
 	// Getters
-	float getYaw() const;
-	float getPitch() const;
-	float getRoll() const;
+	float GetYaw() const;
+	float GetPitch() const;
+	float GetRoll() const;
 
 	// Setters
-	void setPos(DirectX::XMFLOAT3 _pos);
-	void setPos(float _x, float _y, float _z);
+	void SetPos(DirectX::XMFLOAT3 _pos);
+	void SetPos(float _x, float _y, float _z);
 
-	void setScale(float _scale);
-	void setScale(float _x, float _y, float _z);
-	void setScale(DirectX::XMFLOAT3 _scale);
+	void SetScale(float _scale);
+	void SetScale(float _x, float _y, float _z);
+	void SetScale(DirectX::XMFLOAT3 _scale);
 
-	void setPitch(float _pitch);
-	void setYaw(float _yaw);
-	void setRoll(float _roll);
-	void setPitchYawRoll(float _pitch, float _yaw, float _roll);
+	void SetPitch(float _pitch);
+	void SetYaw(float _yaw);
+	void SetRoll(float _roll);
+	void SetPitchYawRoll(float _pitch, float _yaw, float _roll);
 
 protected:
 
