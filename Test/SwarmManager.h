@@ -33,10 +33,13 @@ private:
 	void GenerateBehaviours();
 	void GenerateWaypoints(int _max_bots);
 	void GenerateBotData();
-	void UpdateZones(int _zone);
+	void UpdateZones(int _zone, GameData* _game_data);
 
 	void UpdateBotPositions(int _zone);
 	void SetZonesForUpdate(int _zone, std::vector<int> _update_zones);
+
+	bool ZoneValid(int _zone);
+	void MoveBot(int i, int _zone, int _new_zone);
 
 	SwarmBotData* swarm_data;
 

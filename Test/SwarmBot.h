@@ -20,7 +20,7 @@ public:
 	//initialise the Veretx and Index buffers for the Boid
 	void Init(ID3D11Device* _GD);
 
-	void Tick(SwarmBotData* _SBD);
+	void Tick(SwarmBotData* _SBD, GameData* _game_data);
 	void Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
 
 	bool GetIsActive();

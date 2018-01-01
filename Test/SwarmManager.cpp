@@ -19,7 +19,7 @@ SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots) :
 	grid_height(6),
 	current_zone(0)
 {
-	zones.reserve(no_zones), // 7 x 7 grid
+	zones.reserve(no_zones),
 	waypoints.reserve(4);
 
 	GenerateWaypoints(_max_bots);
@@ -39,7 +39,7 @@ SwarmManager::~SwarmManager()
 
 void SwarmManager::Tick(GameData* _game_data)
 {
-	UpdateZones(current_zone);
+	UpdateZones(current_zone, _game_data);
 
 	current_zone++;
 
@@ -66,6 +66,8 @@ void SwarmManager::GenerateZones(ID3D11Device* _pd3dDevice, const int& _max_bots
 	int no_bots = _max_bots / no_zones;
 
 	int zone_ID = 0;
+	int row = 0;
+	int col = 0;
 
 	float zone_size_x = max_area / grid_width;
 	float zone_size_y = max_area / grid_height;
@@ -75,16 +77,19 @@ void SwarmManager::GenerateZones(ID3D11Device* _pd3dDevice, const int& _max_bots
 	// Populate each zone
 	for (int i = 0; i < no_zones; i++)
 	{
-		zone = new Zone(_pd3dDevice, zone_ID, pos, size, no_bots);
+		zone = new Zone(_pd3dDevice, zone_ID, pos, size, row, col, no_bots);
 
 		zones.push_back(zone);
 		zone_ID++;
 		pos.x += zone_size_x;
+		col++;
 
 		if (pos.x >= max_area)
 		{
 			pos.x = 0.0f;
 			pos.y += zone_size_y;
+			col = 0;
+			row++;
 		}
 	}
 }
@@ -104,12 +109,12 @@ void SwarmManager::GenerateBotData()
 {
 	swarm_data = new SwarmBotData();
 
-	swarm_data->desiredSep    =  2.5f;
+	swarm_data->desiredSep    =  5.0f;
 	swarm_data->bot_max_force = 0.02f;
-	swarm_data->bot_max_speed =  1.5f;
+	swarm_data->bot_max_speed =  1.0f;
 	swarm_data->neighbourDist = 10.0f;
-	swarm_data->pathWeight    = -0.5f;
-	swarm_data->sepWeight     =  10.0f;
+	swarm_data->pathWeight    = -0.1f;
+	swarm_data->sepWeight     =  5.0f;
 }
 
 
@@ -136,26 +141,27 @@ void SwarmManager::GenerateWaypoints(int _max_bots)
 
 
 // needs updating to cycle through the zones
-void SwarmManager::UpdateZones(int _zone)
+void SwarmManager::UpdateZones(int _zone, GameData* _game_data)
 {
 	std::vector<int> update_zones;
 
 	SetZonesForUpdate(_zone, update_zones);
 
-	// Update this zone
+	// Update zone
 	zones[current_zone]->Run(swarm_data, swarm_behaviours, waypoints);
 
-	// Uodate surrounding zones
+	/*// Uodate surrounding zones
 	for (int i = 0; i < update_zones.size(); i++)
 	{
 		zones[current_zone]->Run(zones[update_zones[i]]->GetSwarm(), swarm_data, swarm_behaviours, waypoints);
-	}
-
+	}*/
 
 	for (int i = 0; i < zones.size(); i++)
 	{
-		zones[i]->Tick(swarm_data);
+		zones[i]->Tick(swarm_data, _game_data);
 	}
+
+	UpdateBotPositions(_zone);
 }
 
 
@@ -188,23 +194,44 @@ void SwarmManager::UpdateBotPositions(int _zone)
 				// Change Zone
 				std::cout << "im Down and Left" << std::endl;
 
+				int new_zone = _zone - 1 - grid_width; // (move Left, Down a row)
+
+				if(!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
+
 				return;
 			}
 
 			// is bot in the Zone DOWN and RIGHT
-			if (bot_pos.x >(zone_pos.x + zone_size.x) && bot_pos.y < zone_pos.y)
+			if (bot_pos.x > (zone_pos.x + zone_size.x) && bot_pos.y < zone_pos.y)
 			{
 				// Change Zone
 				std::cout << "im Down and Right" << std::endl;
+
+				int new_zone = _zone + 1 - grid_width; // (move Right, Down a row)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
 
 				return;
 			}
 
 			// is bot in the Zone UP and LEFT
-			if (bot_pos.x < zone_pos.x && bot_pos.y >(zone_pos.y + zone_size.y))
+			if (bot_pos.x < zone_pos.x && bot_pos.y > (zone_pos.y + zone_size.y))
 			{
 				// Change Zone
 				std::cout << "im Up and Left" << std::endl;
+
+				int new_zone = _zone - 1 + grid_width; // (move Left, Up a Row)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
 
 				return;
 			}
@@ -215,6 +242,13 @@ void SwarmManager::UpdateBotPositions(int _zone)
 				// Change Zone
 				std::cout << "im Up and Right" << std::endl;
 
+				int new_zone = _zone + 1 + grid_width; // (move Right, Up a Row)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
+
 				return;
 			}
 
@@ -223,6 +257,13 @@ void SwarmManager::UpdateBotPositions(int _zone)
 			{
 				// Change Zone
 				std::cout << "im Left" << std::endl;
+
+				int new_zone = _zone - 1 ; // (move Left)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
 
 				return;
 			}
@@ -233,6 +274,13 @@ void SwarmManager::UpdateBotPositions(int _zone)
 				// Change Zone
 				std::cout << "im Right" << std::endl;
 
+				int new_zone = _zone + 1; // (move Right)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
+
 				return;
 			}
 
@@ -241,6 +289,13 @@ void SwarmManager::UpdateBotPositions(int _zone)
 			{
 				// Change Zone
 				std::cout << "im Down" << std::endl;
+
+				int new_zone = _zone - grid_width; // (Down a Row)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
 
 				return;
 			}
@@ -251,11 +306,18 @@ void SwarmManager::UpdateBotPositions(int _zone)
 				// Change Zone
 				std::cout << "im Up" << std::endl;
 
+				int new_zone = _zone + grid_width; // (Up a Row)
+
+				if (!ZoneValid(new_zone))
+					continue;
+
+				MoveBot(i, _zone, new_zone);
+
 				return;
 			}
-
-			// if none are true then the bots in the correct zone
 		}
+		// if none are true then check bot is in the correct zone,
+		// if not move bot to new random pos within this zone...
 	}
 }
 
@@ -263,4 +325,22 @@ void SwarmManager::UpdateBotPositions(int _zone)
 float SwarmManager::GetZoneCenter()
 {
 	return max_area / 2;
+}
+
+
+bool SwarmManager::ZoneValid(int _zone)
+{
+	if (_zone >= 0 && _zone < (grid_width * grid_height))
+		return true;
+
+	else 
+		return false;
+}
+
+
+void SwarmManager::MoveBot(int _bot, int _zone, int _new_zone)
+{
+	zones[_new_zone]->GetSwarm().push_back(std::move(zones[_zone]->GetBot(_bot))); // Add bot to new Zone
+
+	zones[_zone]->GetSwarm().erase(zones[_zone]->GetSwarm().begin() + _bot); // Cleanup old Zone
 }

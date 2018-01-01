@@ -13,4 +13,5 @@ struct GameData
 	unsigned char* m_prevKeyboardState; //previous frame's state of the keyboard
 	DIMOUSESTATE* m_mouseState; //current state of the mouse
 	Camera* m_currentCam;
+	bool play;
 };

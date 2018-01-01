@@ -77,6 +77,22 @@ bool InputHandler::Tick(GameData* _GD, TPSCamera* _camera)
 		return false;
 	}
 
+	if ((m_keyboardState[DIK_P] & 0x80) &&
+		!(m_prevKeyboardState[DIK_P] & 0x80))
+	{
+		if (_GD->play == true)
+		{
+			_GD->play = false;
+			//return true;
+		}
+
+		else if (_GD->play == false)
+		{
+			_GD->play = true;
+			//return true;
+		}
+	}
+
 	if ((m_mouseState.rgbButtons[1] & 0x80))
 	{
 		_camera->AllowRotation(_GD);

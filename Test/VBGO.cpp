@@ -249,13 +249,13 @@ void VBGO::UpdateConstantBuffer(DrawData* _draw_data)
 	s_pCB->view = XMMatrixTranspose(_draw_data->m_cam->getViewMatrix());
 	s_pCB->projection = XMMatrixTranspose(_draw_data->m_cam->getProjMatrix());
 
-	// Lighting
+	/*// Lighting
 	if (_draw_data->m_light)
 	{
 	s_pCB->lightCol = _draw_data->m_light->GetColour();
 	s_pCB->lightPos = _draw_data->m_light->GetPos();
 	s_pCB->ambientCol = _draw_data->m_light->GetAmbCol();
-	}
+	}*/
 }
 
 

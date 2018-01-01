@@ -4,21 +4,21 @@
 #include <windows.h>
 #include <list>
 #include <memory>
+#include "FrameTimer.h"
 
 
 using std::list;
-//using std::unique_ptr;
-//using namespace DirectX;
 
 class SwarmBot;
 class SwarmManager;
 class TPSCamera;
-class Light;
 
 struct GameData;
 struct DrawData;
 
 class InputHandler;
+
+class FrameTimer;
 
 class Game
 {
@@ -46,9 +46,10 @@ protected:
 	SwarmBot* bot_cam;
 	SwarmBot* bot;
 	TPSCamera* m_camera;
-	Light* m_light;
 
 private:
+
+	FrameTimer ft;
 
 	float screenWidth;
 	float screenHeight;

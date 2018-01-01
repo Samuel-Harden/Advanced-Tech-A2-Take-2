@@ -23,13 +23,27 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	ID3D11DeviceContext* pd3dImmediateContext;
 	_pd3dDevice->GetImmediateContext(&pd3dImmediateContext);
 
-
 	// Seed the random number generator
 	srand((UINT)time(NULL));
 
 	m_hWnd = _hWnd;
 
 	m_GD = new GameData;
+
+	/*
+	auto i = std::begin(inv);
+
+	while (i != std::end(inv)) {
+		// Do some stuff
+		if (blah)					for iteration!!!!!
+			i = inv.erase(i);
+		else
+			++i;
+	}
+	*/
+
+	/////////////////////////////////////////////////////////
+
 
 
 	// Init render system for VBGOs
@@ -51,10 +65,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_GD->m_keyboardState = &input_handler->getKeyboardState();
 	m_GD->m_prevKeyboardState = &input_handler->getPreviousKeyboardState();
 	m_GD->m_mouseState = &input_handler->getMouseState();
-
-	//create a base light
-	m_light = new Light(XMFLOAT3(220.0f, 220.0f, 220.0f),
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.4f, 0.1f, 0.1f, 1.0f));
+	m_GD->play = true;
 
 	bot_cam = new SwarmBot();
 	bot_cam->Init(_pd3dDevice);
@@ -66,9 +77,8 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_DD = new DrawData;
 	m_DD->m_pd3dImmediateContext = nullptr;
 	m_DD->m_cam = m_camera;
-	m_DD->m_light = m_light;
 
-	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 20000);
+	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 40000);
 
 	bot_cam->SetPos({ swarm_manager->GetZoneCenter(), swarm_manager->GetZoneCenter(), 0.0f });
 
@@ -112,9 +122,11 @@ bool Game::Tick()
 	}
 
 	m_camera->Tick(m_GD);
-	m_light->Tick(m_GD);
 
-	swarm_manager->Tick(m_GD);
+	if (m_GD->play)
+	{
+		swarm_manager->Tick(m_GD);
+	}
 
 	//calculate frame time-step dt for passing down to game objects
 	DWORD currentTime = GetTickCount();
@@ -140,7 +152,5 @@ void Game::Draw(ID3D11DeviceContext* _pd3dImmediateContext)
 
 	swarm_manager->Draw(m_DD);
 
-
-	m_light->Draw(m_DD);
 	m_camera->Draw(m_DD);
 };

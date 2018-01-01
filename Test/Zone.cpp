@@ -3,10 +3,12 @@
 #include "SwarmBot.h"
 
 
-Zone::Zone(ID3D11Device* _pd3dDevice, int _zone_ID, XMFLOAT2 _pos, XMFLOAT2 _size, int _no_bots) :
+Zone::Zone(ID3D11Device* _pd3dDevice, int _zone_ID, XMFLOAT2 _pos, XMFLOAT2 _size, int _row, int _col, int _no_bots) :
 	zone_ID(_zone_ID),
 	zone_position(_pos),
-	zone_size(_size)
+	zone_size(_size),
+	zone_row(_row),
+	zone_column(_col)
 {
 	swarm_bots.reserve(_no_bots * 2);
 
@@ -43,11 +45,11 @@ void Zone::GenerateBots(ID3D11Device* _pd3dDevice, int no_bots)
 }
 
 
-void Zone::Tick(SwarmBotData* _SBD)
+void Zone::Tick(SwarmBotData* _SBD, GameData* _game_data)
 {
 	for (int i = 0; i < swarm_bots.size(); i++)
 	{
-		swarm_bots[i]->Tick(_SBD);
+		swarm_bots[i]->Tick(_SBD, _game_data);
 	}
 }
 
@@ -102,7 +104,7 @@ XMFLOAT2 Zone::GetSize()
 }
 
 
-std::vector<SwarmBot*> Zone::GetSwarm()
+std::vector<SwarmBot*>& Zone::GetSwarm()
 {
 	return swarm_bots;
 }

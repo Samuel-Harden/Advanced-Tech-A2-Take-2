@@ -98,11 +98,11 @@ void SwarmBot::Init(ID3D11Device* GD)
 
 
 
-void SwarmBot::Tick(SwarmBotData* _SBD)
+void SwarmBot::Tick(SwarmBotData* _SBD, GameData* _game_data)
 {
-	velocity.x = (velocity.x + acceleration.x);
-	velocity.y = (velocity.y + acceleration.y);
-	velocity.z = (velocity.z + acceleration.z);
+	velocity.x = (velocity.x + acceleration.x) * _game_data->m_dt;
+	velocity.y = (velocity.y + acceleration.y) * _game_data->m_dt;
+	velocity.z = (velocity.z + acceleration.z) * _game_data->m_dt;
 
 	XMVECTOR velocity_vector = XMLoadFloat3(&velocity);
 
@@ -122,6 +122,8 @@ void SwarmBot::Tick(SwarmBotData* _SBD)
 	XMMATRIX trans_mat = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
 	m_worldMat = scaleMat * m_rotMat * trans_mat;
+
+	//acceleration = Vector3Zero;
 }
 
 

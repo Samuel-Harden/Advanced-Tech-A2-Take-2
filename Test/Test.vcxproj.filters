@@ -82,6 +82,9 @@
       <Filter>Source Files\Swarm\Behaviours</Filter>
     </ClCompile>
     <ClCompile Include="Zone.cpp">
+      <Filter>Source Files\Swarm</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -144,6 +147,9 @@
       <Filter>Header Files\Swarm\Behaviours</Filter>
     </ClInclude>
     <ClInclude Include="Zone.h">
+      <Filter>Header Files\Swarm</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
