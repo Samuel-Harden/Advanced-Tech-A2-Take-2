@@ -1,84 +1,77 @@
 #include "InputHandler.h"
 
 #include "TPSCamera.h"
-
 #include "GameData.h"
-
 
 
 InputHandler::InputHandler(HWND& _hWnd, HINSTANCE& _hInstance)
 {
-	m_pKeyboard = nullptr;
-	m_pDirectInput = nullptr;
+	m_keyboard     = nullptr;
+	m_direct_input = nullptr;
 
 	HRESULT hr = DirectInput8Create(_hInstance, DIRECTINPUT_VERSION,
-		IID_IDirectInput8, (void**)&m_pDirectInput, NULL);
-	hr = m_pDirectInput->CreateDevice(GUID_SysKeyboard, &m_pKeyboard, NULL);
-	hr = m_pKeyboard->SetDataFormat(&c_dfDIKeyboard);
-	hr = m_pKeyboard->SetCooperativeLevel(_hWnd,
+		IID_IDirectInput8, (void**)&m_direct_input, NULL);
+	hr = m_direct_input->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL);
+	hr = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
+	hr = m_keyboard->SetCooperativeLevel(_hWnd,
 		DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
-	hr = m_pDirectInput->CreateDevice(GUID_SysMouse, &m_pMouse, NULL);
-	hr = m_pMouse->SetDataFormat(&c_dfDIMouse);
-	hr = m_pMouse->SetCooperativeLevel(_hWnd,
+	hr = m_direct_input->CreateDevice(GUID_SysMouse, &m_mouse, NULL);
+	hr = m_mouse->SetDataFormat(&c_dfDIMouse);
+	hr = m_mouse->SetCooperativeLevel(_hWnd,
 		DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 }
-
 
 
 InputHandler::~InputHandler()
 {
 	//tidy away Direct Input Stuff
-	if (m_pKeyboard)
+	if (m_keyboard)
 	{
-		m_pKeyboard->Unacquire();
-		m_pKeyboard->Release();
+		m_keyboard->Unacquire();
+		m_keyboard->Release();
 	}
-	if (m_pMouse)
+	if (m_mouse)
 	{
-		m_pMouse->Unacquire();
-		m_pMouse->Release();
+		m_mouse->Unacquire();
+		m_mouse->Release();
 	}
-	if (m_pDirectInput)
+	if (m_direct_input)
 	{
-		m_pDirectInput->Release();
+		m_direct_input->Release();
 	}
 }
-
 
 
 unsigned char& InputHandler::getKeyboardState()
 {
-	return m_keyboardState[256];
+	return m_keyboard_state[256];
 }
-
 
 
 unsigned char& InputHandler::getPreviousKeyboardState()
 {
-	return m_prevKeyboardState[256];
+	return m_prev_keyboard_state[256];
 }
-
 
 
 DIMOUSESTATE& InputHandler::getMouseState()
 {
-	return m_mouseState;
+	return m_mouse_state;
 }
 
 
-
-bool InputHandler::Tick(GameData* _GD, TPSCamera* _camera)
+bool InputHandler::tick(GameData* _GD, TPSCamera* _camera)
 {
-	if ((m_keyboardState[DIK_ESCAPE] & 0x80) &&
-		!(m_prevKeyboardState[DIK_ESCAPE] & 0x80))
+	if ((m_keyboard_state[DIK_ESCAPE] & 0x80) &&
+		!(m_prev_keyboard_state[DIK_ESCAPE] & 0x80))
 	{
 		// return false to exit the application
 		return false;
 	}
 
-	if ((m_keyboardState[DIK_P] & 0x80) &&
-		!(m_prevKeyboardState[DIK_P] & 0x80))
+	if ((m_keyboard_state[DIK_P] & 0x80) &&
+		!(m_prev_keyboard_state[DIK_P] & 0x80))
 	{
 		if (_GD->play == true)
 		{
@@ -93,44 +86,44 @@ bool InputHandler::Tick(GameData* _GD, TPSCamera* _camera)
 		}
 	}
 
-	if ((m_mouseState.rgbButtons[1] & 0x80))
+	if ((m_mouse_state.rgbButtons[1] & 0x80))
 	{
-		_camera->AllowRotation(_GD);
+		_camera->allowRotation(_GD);
 	}
 
-	if ((-m_mouseState.lZ & 0X80))
+	if ((-m_mouse_state.lZ & 0X80))
 	{
-		_camera->IncreaseZoom();
+		_camera->increaseZoom();
 	}
 
-	if ((m_mouseState.lZ & 0X80))
+	if ((m_mouse_state.lZ & 0X80))
 	{
-		_camera->DecreaseZoom();
+		_camera->decreaseZoom();
 	}
 
 	return true;
 }
 
 
-
 bool InputHandler::readKeyboard()
 {
 	// Copy over old keyboard state
-	memcpy(m_prevKeyboardState, m_keyboardState, sizeof(unsigned char) * 256);
+	memcpy(m_prev_keyboard_state, m_keyboard_state, sizeof(unsigned char) * 256);
 
 	// clear out previous state
-	ZeroMemory(&m_keyboardState, sizeof(m_keyboardState));
+	ZeroMemory(&m_keyboard_state, sizeof(m_keyboard_state));
 
 	// Read the keyboard device
-	HRESULT hr = m_pKeyboard->GetDeviceState(sizeof(m_keyboardState),
-		(LPVOID)&m_keyboardState);
+	HRESULT hr = m_keyboard->GetDeviceState(sizeof(m_keyboard_state),
+		(LPVOID)&m_keyboard_state);
+
 	if (FAILED(hr))
 	{
 		// If the keyboard lost focus or was not acquired
 		// then try to get control back
 		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 		{
-			m_pKeyboard->Acquire();
+			m_keyboard->Acquire();
 		}
 
 		else
@@ -138,29 +131,30 @@ bool InputHandler::readKeyboard()
 			return false;
 		}
 	}
+
 	return true;
 }
-
 
 
 bool InputHandler::readMouse()
 {
 	// Set previous mouse state
-	m_prevMouseState = m_mouseState;
+	m_prev_mouse_state = m_mouse_state;
 
 	// clear out previous state
-	ZeroMemory(&m_mouseState, sizeof(m_mouseState));
+	ZeroMemory(&m_mouse_state, sizeof(m_mouse_state));
 
 	// Read the mouse device
-	HRESULT hr = m_pMouse->GetDeviceState(sizeof(m_mouseState),
-		(LPVOID)&m_mouseState);
+	HRESULT hr = m_mouse->GetDeviceState(sizeof(m_mouse_state),
+		(LPVOID)&m_mouse_state);
+
 	if (FAILED(hr))
 	{
 		// If the mouse lost focus or was not acquired
 		// then try to get control back
 		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 		{
-			m_pMouse->Acquire();
+			m_mouse->Acquire();
 		}
 
 		else
@@ -168,5 +162,6 @@ bool InputHandler::readMouse()
 			return false;
 		}
 	}
+
 	return true;
 }

@@ -5,6 +5,7 @@
 #include "SimpleMathAid.h"
 
 class Camera;
+
 struct GameData;
 struct DrawData;
 
@@ -14,34 +15,34 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	DirectX::XMFLOAT3 GetScale() const;
-	DirectX::XMFLOAT3 GetPos() const;
+	DirectX::XMFLOAT3 getScale() const;
+	DirectX::XMFLOAT3 getPos() const;
 
-	virtual void Tick(GameData* _game_data);
-	virtual void Draw(DrawData* _draw_data) = 0;
+	virtual void tick(GameData* _game_data);
+	virtual void draw(DrawData* _draw_data) = 0;
 
 	// Getters
-	float GetYaw() const;
-	float GetPitch() const;
-	float GetRoll() const;
+	float getYaw() const;
+	float getPitch() const;
+	float getRoll() const;
 
 	// Setters
-	void SetPos(DirectX::XMFLOAT3 _pos);
-	void SetPos(float _x, float _y, float _z);
+	void setPos(DirectX::XMFLOAT3 _pos);
+	void setPos(float _x, float _y, float _z);
 
-	void SetScale(float _scale);
-	void SetScale(float _x, float _y, float _z);
-	void SetScale(DirectX::XMFLOAT3 _scale);
+	void setScale(float _scale);
+	void setScale(float _x, float _y, float _z);
+	void setScale(DirectX::XMFLOAT3 _scale);
 
-	void SetPitch(float _pitch);
-	void SetYaw(float _yaw);
-	void SetRoll(float _roll);
-	void SetPitchYawRoll(float _pitch, float _yaw, float _roll);
+	void setPitch(float _pitch);
+	void setYaw(float _yaw);
+	void setRoll(float _roll);
+	void setPitchYawRoll(float _pitch, float _yaw, float _roll);
 
 protected:
 
-	DirectX::XMMATRIX m_worldMat;
-	DirectX::XMMATRIX m_rotMat;
+	DirectX::XMMATRIX m_world_matrix;
+	DirectX::XMMATRIX m_rotation_matrix;
 
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_scale;

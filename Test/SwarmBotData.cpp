@@ -13,61 +13,37 @@ SwarmBotData::~SwarmBotData()
 }
 
 
-void SwarmBotData::SetSepWeight(float _weight)
+void SwarmBotData::setSepWeight(float _weight)
 {
-	sepWeight = _weight;
+	sep_weight = _weight;
 }
 
 
-void SwarmBotData::SetFFWeight(float _weight)
+void SwarmBotData::setPathWeight(float _weight)
 {
-	ffWeight = _weight;
+	path_weight = _weight;
 }
 
 
-void SwarmBotData::SetAliWeight(float _weight)
-{
-	aliWeight = _weight;
-}
-
-
-void SwarmBotData::SetCohWeight(float _weight)
-{
-	cohWeight = _weight;
-}
-
-
-void SwarmBotData::SetRunWeight(float _weight)
-{
-	runWeight = _weight;
-}
-
-
-void SwarmBotData::SetPathWeight(float _weight)
-{
-	pathWeight = _weight;
-}
-
-
-void SwarmBotData::SetBotMaxSpeed(float _speed)
+void SwarmBotData::setBotMaxSpeed(float _speed)
 {
 	bot_max_speed = _speed;
 }
 
 
-void SwarmBotData::SetMaxForce(float _force)
+void SwarmBotData::setMaxForce(float _force)
 {
 	bot_max_force = _force;
 }
 
 
-void SwarmBotData::SetNeighbourDist(float _dist)
+void SwarmBotData::setNeighbourDist(float _dist)
 {
-	neighbourDist = _dist;
+	neighbour_distance = _dist;
 }
 
 
-void SwarmBotData::SetDesiredSep(float _sep)
+void SwarmBotData::setDesiredSep(float _sep)
 {
-	desiredSep = _sep;
+	desired_separation = _sep;
 }

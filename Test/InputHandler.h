@@ -16,19 +16,19 @@ public:
 
 	unsigned char& getKeyboardState();
 	unsigned char& getPreviousKeyboardState();
-	DIMOUSESTATE& getMouseState();
+	DIMOUSESTATE&  getMouseState();
 
-	bool Tick(GameData* _GD, TPSCamera* _camera);
+	bool tick(GameData* _GD, TPSCamera* _camera);
 
 protected:
 
-	IDirectInput8*			m_pDirectInput;
-	IDirectInputDevice8*	m_pKeyboard;
-	IDirectInputDevice8*	m_pMouse;
-	unsigned char			m_keyboardState[256];
-	unsigned char			m_prevKeyboardState[256];
-	DIMOUSESTATE			m_mouseState;
-	DIMOUSESTATE			m_prevMouseState;
+	IDirectInput8*			m_direct_input;
+	IDirectInputDevice8*	m_keyboard;
+	IDirectInputDevice8*	m_mouse;
+	unsigned char			m_keyboard_state[256];
+	unsigned char			m_prev_keyboard_state[256];
+	DIMOUSESTATE			m_mouse_state;
+	DIMOUSESTATE			m_prev_mouse_state;
 
 private:
 

@@ -20,26 +20,26 @@ public:
 	SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots);
 	~SwarmManager();
 
-	void Tick(GameData* _game_data);
-	void Draw(DrawData* _draw_data);
+	void tick(GameData* _game_data);
+	void draw(DrawData* _draw_data);
 
-	float GetZoneCenter();
+	float getZoneCenter();
 
 protected:
 
 private:
 
-	void GenerateZones(ID3D11Device* _pd3dDevice, const int& _max_bots);
-	void GenerateBehaviours();
-	void GenerateWaypoints(int _max_bots);
-	void GenerateBotData();
-	void UpdateZones(int _zone, GameData* _game_data);
+	void generateZones(ID3D11Device* _pd3dDevice, const int& _max_bots);
+	void generateBehaviours();
+	void generateWaypoints(int _max_bots);
+	void generateBotData();
+	void updateZones(int _zone, GameData* _game_data);
 
-	void UpdateBotPositions(int _zone);
-	void SetZonesForUpdate(int _zone, std::vector<int> _update_zones);
+	void updateBotPositions(int _zone);
+	void setZonesForUpdate(int _zone, std::vector<int> _update_zones);
 
-	bool ZoneValid(int _zone);
-	void MoveBot(int i, int _zone, int _new_zone);
+	bool zoneValidation(int _zone);
+	void moveBot(int i, int _zone, int _new_zone);
 
 	SwarmBotData* swarm_data;
 
@@ -55,13 +55,10 @@ private:
 	int no_waypoints;
 
 	// Vector containing vectors(bots in each zone)
-	std::vector<Zone*> zones;
+	std::vector<Zone*> m_zones;
 	int no_zones;
 	int current_zone;
 
 	int grid_width;
 	int grid_height;
-
-	// the aim is too keep zomes below 250 (extra 250 as safety net)
-	const int max_bots_zone = 500;
 };

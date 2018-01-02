@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
+
 #include <stdio.h>
 #include <iostream>
 #include <Windows.h>
@@ -22,14 +23,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pScmdline);
 
-	Application App;
+	Application app;
 
-	if (FAILED(App.InitWindow(hInstance, iCmdshow)))
+	if (FAILED(app.initWindow(hInstance, iCmdshow)))
 		return 0;
 
-	if (FAILED(App.InitDevice()))
+	if (FAILED(app.initDevice()))
 	{
-		App.CleanupDevice();
+		app.cleanupDevice();
 		return 0;
 	}
 
@@ -45,9 +46,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		else
 		{
 
-			if (App.Update()) //update next logical tick of the App
+			if (app.update()) //update next logical tick of the App
 			{
-				App.Render();
+				app.render();
 			}
 			else
 			{
@@ -56,18 +57,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		}
 	}
 
-	App.CleanupDevice();
+	app.cleanupDevice();
 
 	return (int)msg.wParam;
 }
-
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-		// Check if the window is being destroyed.
+	// Check if the window is being destroyed.
 	case WM_DESTROY:
 	{
 		PostQuitMessage(0);
@@ -86,5 +86,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
 	}
 }

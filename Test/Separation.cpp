@@ -31,18 +31,18 @@ DirectX::XMFLOAT3 Separation::CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* 
 	// Check through every other boid
 	for (int i = 0; i < _bots.size(); i++)
 	{
-		if (_bots[i]->GetIsActive() == true)
+		if (_bots[i]->getIsActive() == true)
 		{
-			float d = Vector3Distance(_bot->GetPos(), _bots[i]->GetPos());
+			float d = Vector3Distance(_bot->getPos(), _bots[i]->getPos());
 
 			// if Boid is a neighbour
-			if (d > 0 && d < _SBD->desiredSep)
+			if (d > 0 && d < _SBD->desired_separation)
 			{
 				XMFLOAT3 diff = Vector3Zero;
 				// Calculate vector pointing away from neighbour
-				diff.x = (_bot->GetPos().x - _bots[i]->GetPos().x);
-				diff.y = (_bot->GetPos().y - _bots[i]->GetPos().y);
-				diff.z = (_bot->GetPos().z - _bots[i]->GetPos().z);
+				diff.x = (_bot->getPos().x - _bots[i]->getPos().x);
+				diff.y = (_bot->getPos().y - _bots[i]->getPos().y);
+				diff.z = (_bot->getPos().z - _bots[i]->getPos().z);
 
 				XMVECTOR diff_vector = XMLoadFloat3(&diff);
 
@@ -84,7 +84,7 @@ DirectX::XMFLOAT3 Separation::CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* 
 		// Implement Reynolds: steering = desired - velocity
 		steer_vector = (steer_vector * _SBD->bot_max_speed);
 
-		XMVECTOR velocity = XMLoadFloat3(&_bot->GetVelocity());
+		XMVECTOR velocity = XMLoadFloat3(&_bot->getVelocity());
 
 		steer_vector = (steer_vector - velocity);
 

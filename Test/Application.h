@@ -4,9 +4,6 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 
-/////////////
-// LINKING //
-/////////////
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
@@ -18,18 +15,15 @@ class Application
 {
 public:
 	Application() {};
-	~Application() { CleanupDevice(); };
+	~Application();
 
-	//init the Windows window and the game
-	HRESULT InitWindow(HINSTANCE _hInstance, int _nCmdShow);
+	HRESULT initWindow(HINSTANCE _hInstance, int _nCmdShow);
 
-	//init and tidy up after use DirectX resources
-	HRESULT InitDevice();
-	void CleanupDevice(); //also deletes current game
+	HRESULT initDevice();
+	void cleanupDevice();
 
-						  //tick and render the app and game
-	bool Update();
-	void Render();
+	bool update();
+	void render();
 
 protected:
 
@@ -38,21 +32,21 @@ protected:
 	HWND                    m_hWnd = nullptr;
 
 	//DirectX Resources
-	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
+	D3D_DRIVER_TYPE         m_driver_type = D3D_DRIVER_TYPE_NULL;
 	D3D_FEATURE_LEVEL       m_featureLevel = D3D_FEATURE_LEVEL_11_0;
-	ID3D11Device*           m_pd3dDevice = nullptr;
-	ID3D11Device1*          m_pd3dDevice1 = nullptr;
-	ID3D11DeviceContext*    m_pImmediateContext = nullptr;
-	ID3D11DeviceContext1*   m_pImmediateContext1 = nullptr;
-	IDXGISwapChain*         m_pSwapChain = nullptr;
-	IDXGISwapChain1*        m_pSwapChain1 = nullptr;
-	ID3D11RenderTargetView* m_pRenderTargetView = nullptr;
-	ID3D11Texture2D*        m_pDepthStencil = nullptr;
-	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;
-	ID3D11RasterizerState*  m_pRasterState = nullptr;
+	ID3D11Device*           m_pd3d_device = nullptr;
+	ID3D11Device1*          m_pd3d_device_one = nullptr;
+	ID3D11DeviceContext*    m_p_immediate_context = nullptr;
+	ID3D11DeviceContext1*   m_p_immediate_context_one = nullptr;
+	IDXGISwapChain*         m_p_swap_chain = nullptr;
+	IDXGISwapChain1*        m_p_swap_chain_one = nullptr;
+	ID3D11RenderTargetView* m_p_render_target_view = nullptr;
+	ID3D11Texture2D*        m_p_depth_stencil = nullptr;
+	ID3D11DepthStencilView* m_p_depth_stencil_view = nullptr;
+	ID3D11RasterizerState*  m_p_raster_state = nullptr;
 
 	float m_ClearColour[4];
 
 	//pointer to current game
-	Game*					m_Game = nullptr;
+	Game*					m_game = nullptr;
 };

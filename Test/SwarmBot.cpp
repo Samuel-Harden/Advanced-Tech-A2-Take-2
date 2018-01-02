@@ -4,15 +4,14 @@
 
 #include "GameData.h"
 #include "SwarmBotData.h"
-
 #include "Behaviour.h"
 
 
 SwarmBot::SwarmBot()
 	: is_active(true),
-	newPos(false),
-	wayPointID(0),
-	acceleration(0.0f, 0.0f, 0.0f)
+	new_pos(false),
+	waypoint_ID(0),
+	acceleration(DirectX::Vector3Zero)
 {
 
 }
@@ -20,13 +19,12 @@ SwarmBot::SwarmBot()
 
 SwarmBot::SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos, float _waypoint)
 	: is_active(true),
-	newPos(false),
-	wayPointID(_waypoint),
-	acceleration(0.0f, 0.0f, 0.0f)
+	new_pos(false),
+	waypoint_ID(_waypoint),
+	acceleration(DirectX::Vector3Zero)
 {
-	SetRandPos(_min_pos, _max_pos);
+	setRandPos(_min_pos, _max_pos);
 }
-
 
 
 SwarmBot::~SwarmBot()
@@ -35,13 +33,12 @@ SwarmBot::~SwarmBot()
 }
 
 
-
-void SwarmBot::Init(ID3D11Device* GD)
+void SwarmBot::init(ID3D11Device* GD)
 {
 	//calculate number of vertices and primatives
-	int numVerts = 6;
-	m_numPrims = numVerts / 3;
-	m_vertices = new myVertex[numVerts];
+	int numVerts  = 6;
+	m_num_prims   = numVerts / 3;
+	m_vertices    = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
 
 	//as using the standard VB shader set the tex-coords somewhere safe
@@ -88,8 +85,8 @@ void SwarmBot::Init(ID3D11Device* GD)
 		m_vertices[V3].Norm = norm;
 	}*/
 
-	BuildIB(GD, indices);
-	BuildVB(GD, numVerts, m_vertices);
+	buildIB(GD, indices);
+	buildVB(GD, numVerts, m_vertices);
 
 	delete[] indices;    //this is no longer needed as this is now in the index Buffer
 	delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
@@ -98,7 +95,7 @@ void SwarmBot::Init(ID3D11Device* GD)
 
 
 
-void SwarmBot::Tick(SwarmBotData* _SBD, GameData* _game_data)
+void SwarmBot::tick(SwarmBotData* _SBD, GameData* _game_data)
 {
 	velocity.x = (velocity.x + acceleration.x) * _game_data->m_dt;
 	velocity.y = (velocity.y + acceleration.y) * _game_data->m_dt;
@@ -117,41 +114,42 @@ void SwarmBot::Tick(SwarmBotData* _SBD, GameData* _game_data)
 	m_pos.z = (m_pos.z + velocity.z);
 
 	XMMATRIX scaleMat = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-	m_rotMat = XMMatrixRotationRollPitchYaw(m_pitch, m_yaw, m_roll);
+	m_rotation_matrix = XMMatrixRotationRollPitchYaw(m_pitch, m_yaw, m_roll);
 
 	XMMATRIX trans_mat = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
-	m_worldMat = scaleMat * m_rotMat * trans_mat;
+	m_world_matrix = scaleMat * m_rotation_matrix * trans_mat;
 
 	//acceleration = Vector3Zero;
 }
 
 
-void SwarmBot::Run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
+void SwarmBot::run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
 {
 	using namespace DirectX;
+
 	// Behaviours...
 	XMFLOAT3 sep = _behaviours[0]->CalculateBehaviour1(this, _swarm_data, _bots);    // Seperation
 
-	XMFLOAT3 pf = _behaviours[1]->CalculateBehaviour3(this, _swarm_data, _wpPos);    // Path Finding
+	XMFLOAT3 path_finding = _behaviours[1]->CalculateBehaviour3(this, _swarm_data, _wpPos);    // Path Finding
 
-	sep.x *= _swarm_data->sepWeight;
-	sep.y *= _swarm_data->sepWeight;
-	sep.z *= _swarm_data->sepWeight;
+	sep.x *= _swarm_data->sep_weight;
+	sep.y *= _swarm_data->sep_weight;
+	sep.z *= _swarm_data->sep_weight;
 
-	pf.x *= _swarm_data->pathWeight;
-	pf.y *= _swarm_data->pathWeight;
-	pf.z *= _swarm_data->pathWeight;
+	path_finding.x *= _swarm_data->path_weight;
+	path_finding.y *= _swarm_data->path_weight;
+	path_finding.z *= _swarm_data->path_weight;
 
 	acceleration = Vector3Zero;
 
 	// add these 'forces' to acceleration...
-	ApplyForce(sep);
-	ApplyForce(pf);
+	applyForce(sep);
+	applyForce(path_finding);
 }
 
 
-void SwarmBot::ApplyForce(XMFLOAT3& force)
+void SwarmBot::applyForce(XMFLOAT3& force)
 {
 	acceleration.x = (acceleration.x + force.x);
 	acceleration.y = (acceleration.y + force.y);
@@ -159,43 +157,42 @@ void SwarmBot::ApplyForce(XMFLOAT3& force)
 }
 
 
-bool SwarmBot::GetIsActive()
+bool SwarmBot::getIsActive() const
 {
 	return is_active;
 }
 
 
-void SwarmBot::SetWayPointID(int& _newID)
+int SwarmBot::getWayPointID() const
 {
-	wayPointID = _newID;
+	return waypoint_ID;
 }
 
 
-
-int SwarmBot::GetWayPointID() const
-{
-	return wayPointID;
-}
-
-
-DirectX::XMFLOAT3 SwarmBot::GetVelocity() const
+DirectX::XMFLOAT3 SwarmBot::getVelocity() const
 {
 	return velocity;
 }
 
 
-void SwarmBot::SetRandPos(XMFLOAT2 _min, XMFLOAT2 _max)
+void SwarmBot::setWayPointID(int& _newID)
+{
+	waypoint_ID = _newID;
+}
+
+
+void SwarmBot::setRandPos(XMFLOAT2 _min, XMFLOAT2 _max)
 {
 	// Set random starting positon, inside the Designated zone
-	float pos_x = RandomFloat(_min.x, _max.x);
-	float pos_y = RandomFloat(_min.y, _max.y);
-	float pos_z = 0.0f;
+	float pos_x = randomFloat(_min.x, _max.x);
+	float pos_y = randomFloat(_min.y, _max.y);
+	float pos_z = 0.0f; // Only using X and Y
 
 	m_pos = XMFLOAT3(pos_x, pos_y, pos_z);
 }
 
 
-float SwarmBot::RandomFloat(float _min, float _max)
+float SwarmBot::randomFloat(float _min, float _max)
 {
 	float r = (float)rand() / (float)RAND_MAX;
 	return _min + r * (_max - _min);

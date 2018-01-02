@@ -1,13 +1,13 @@
 #include "Application.h"
 #include "Game.h"
 
-#define DESTROY( x ) if( x ){ x->Release(); x = nullptr;}
 
+#define DESTROY( x ) if( x ){ x->Release(); x = nullptr;}
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-HRESULT Application::InitWindow(HINSTANCE _hInstance, int _nCmdShow)
+HRESULT Application::initWindow(HINSTANCE _hInstance, int _nCmdShow)
 {
 	float width = 800;
 	float height = 600;
@@ -54,7 +54,13 @@ HRESULT Application::InitWindow(HINSTANCE _hInstance, int _nCmdShow)
 }
 
 
-HRESULT Application::InitDevice()
+Application::~Application()
+{
+	cleanupDevice();
+}
+
+
+HRESULT Application::initDevice()
 {
 	HRESULT hr = S_OK;
 
@@ -87,53 +93,56 @@ HRESULT Application::InitDevice()
 
 	for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
 	{
-		m_driverType = driverTypes[driverTypeIndex];
-		hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-			D3D11_SDK_VERSION, &m_pd3dDevice, &m_featureLevel, &m_pImmediateContext);
+		m_driver_type = driverTypes[driverTypeIndex];
+		hr = D3D11CreateDevice(nullptr, m_driver_type, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
+			D3D11_SDK_VERSION, &m_pd3d_device, &m_featureLevel, &m_p_immediate_context);
 
 		if (hr == E_INVALIDARG)
 		{
 			// DirectX 11.0 platforms will not recognize D3D_FEATURE_LEVEL_11_1 so we need to retry without it
-			hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, createDeviceFlags, &featureLevels[1], numFeatureLevels - 1,
-				D3D11_SDK_VERSION, &m_pd3dDevice, &m_featureLevel, &m_pImmediateContext);
+			hr = D3D11CreateDevice(nullptr, m_driver_type, nullptr, createDeviceFlags, &featureLevels[1], numFeatureLevels - 1,
+				D3D11_SDK_VERSION, &m_pd3d_device, &m_featureLevel, &m_p_immediate_context);
 		}
 
 		if (SUCCEEDED(hr))
 			break;
 	}
+
 	if (FAILED(hr))
 		return hr;
 
 	// Obtain DXGI factory from device (since we used nullptr for pAdapter above)
-	IDXGIFactory1* dxgiFactory = nullptr;
+	IDXGIFactory1* dxgi_factory = nullptr;
 	{
 		IDXGIDevice* dxgiDevice = nullptr;
-		hr = m_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));
+		hr = m_pd3d_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));
 		if (SUCCEEDED(hr))
 		{
 			IDXGIAdapter* adapter = nullptr;
 			hr = dxgiDevice->GetAdapter(&adapter);
 			if (SUCCEEDED(hr))
 			{
-				hr = adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&dxgiFactory));
+				hr = adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&dxgi_factory));
 				adapter->Release();
 			}
 			dxgiDevice->Release();
 		}
 	}
+
 	if (FAILED(hr))
 		return hr;
 
 	// Create swap chain
 	IDXGIFactory2* dxgiFactory2 = nullptr;
-	hr = dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
+	hr = dxgi_factory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
+
 	if (dxgiFactory2)
 	{
 		// DirectX 11.1 or later
-		hr = m_pd3dDevice->QueryInterface(__uuidof(ID3D11Device1), reinterpret_cast<void**>(&m_pd3dDevice1));
+		hr = m_pd3d_device->QueryInterface(__uuidof(ID3D11Device1), reinterpret_cast<void**>(&m_pd3d_device_one));
 		if (SUCCEEDED(hr))
 		{
-			(void)m_pImmediateContext->QueryInterface(__uuidof(ID3D11DeviceContext1), reinterpret_cast<void**>(&m_pImmediateContext1));
+			(void)m_p_immediate_context->QueryInterface(__uuidof(ID3D11DeviceContext1), reinterpret_cast<void**>(&m_p_immediate_context_one));
 		}
 
 		DXGI_SWAP_CHAIN_DESC1 sd;
@@ -146,14 +155,15 @@ HRESULT Application::InitDevice()
 		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		sd.BufferCount = 1;
 
-		hr = dxgiFactory2->CreateSwapChainForHwnd(m_pd3dDevice, m_hWnd, &sd, nullptr, nullptr, &m_pSwapChain1);
+		hr = dxgiFactory2->CreateSwapChainForHwnd(m_pd3d_device, m_hWnd, &sd, nullptr, nullptr, &m_p_swap_chain_one);
 		if (SUCCEEDED(hr))
 		{
-			hr = m_pSwapChain1->QueryInterface(__uuidof(IDXGISwapChain), reinterpret_cast<void**>(&m_pSwapChain));
+			hr = m_p_swap_chain_one->QueryInterface(__uuidof(IDXGISwapChain), reinterpret_cast<void**>(&m_p_swap_chain));
 		}
 
 		dxgiFactory2->Release();
 	}
+
 	else
 	{
 		// DirectX 11.0 systems
@@ -171,29 +181,28 @@ HRESULT Application::InitDevice()
 		sd.SampleDesc.Quality = 0;
 		sd.Windowed = TRUE;
 
-		hr = dxgiFactory->CreateSwapChain(m_pd3dDevice, &sd, &m_pSwapChain);
+		hr = dxgi_factory->CreateSwapChain(m_pd3d_device, &sd, &m_p_swap_chain);
 	}
 
-	// Note this tutorial doesn't handle full-screen swapchains so we block the ALT+ENTER shortcut
-	dxgiFactory->MakeWindowAssociation(m_hWnd, DXGI_MWA_NO_ALT_ENTER);
+	dxgi_factory->MakeWindowAssociation(m_hWnd, DXGI_MWA_NO_ALT_ENTER);
 
-	dxgiFactory->Release();
+	dxgi_factory->Release();
 
 	if (FAILED(hr))
 		return hr;
 
 	// Create a render target view
-	ID3D11Texture2D* pBackBuffer = nullptr;
-	hr = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pBackBuffer));
+	ID3D11Texture2D* p_back_buffer = nullptr;
+	hr = m_p_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&p_back_buffer));
 	if (FAILED(hr))
 		return hr;
 
-	hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_pRenderTargetView);
-	pBackBuffer->Release();
+	hr = m_pd3d_device->CreateRenderTargetView(p_back_buffer, nullptr, &m_p_render_target_view);
+	p_back_buffer->Release();
 	if (FAILED(hr))
 		return hr;
 
-	m_pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, nullptr);
+	m_p_immediate_context->OMSetRenderTargets(1, &m_p_render_target_view, nullptr);
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
@@ -203,7 +212,7 @@ HRESULT Application::InitDevice()
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	m_pImmediateContext->RSSetViewports(1, &vp);
+	m_p_immediate_context->RSSetViewports(1, &vp);
 
 	//Create depth stencil texture
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -219,7 +228,7 @@ HRESULT Application::InitDevice()
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
-	hr = m_pd3dDevice->CreateTexture2D(&descDepth, NULL, &m_pDepthStencil);
+	hr = m_pd3d_device->CreateTexture2D(&descDepth, NULL, &m_p_depth_stencil);
 	if (FAILED(hr))
 		return hr;
 
@@ -229,12 +238,12 @@ HRESULT Application::InitDevice()
 	descDSV.Format = descDepth.Format;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0;
-	hr = m_pd3dDevice->CreateDepthStencilView(m_pDepthStencil, &descDSV, &m_pDepthStencilView);
+	hr = m_pd3d_device->CreateDepthStencilView(m_p_depth_stencil, &descDSV, &m_p_depth_stencil_view);
 	if (FAILED(hr))
 		return hr;
 
 	//use the just created render target and depth stencil
-	m_pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+	m_p_immediate_context->OMSetRenderTargets(1, &m_p_render_target_view, m_p_depth_stencil_view);
 
 	//Setup Raster State
 	D3D11_RASTERIZER_DESC rasterDesc;
@@ -250,12 +259,12 @@ HRESULT Application::InitDevice()
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.
-	hr = m_pd3dDevice->CreateRasterizerState(&rasterDesc, &m_pRasterState);
+	hr = m_pd3d_device->CreateRasterizerState(&rasterDesc, &m_p_raster_state);
 	if (FAILED(hr))
 		return hr;
 
 	//use the raster state
-	m_pImmediateContext->RSSetState(m_pRasterState);
+	m_p_immediate_context->RSSetState(m_p_raster_state);
 
 	m_ClearColour[0] = 1.0f;
 	m_ClearColour[1] = 1.0f;
@@ -264,58 +273,58 @@ HRESULT Application::InitDevice()
 
 
 	//actually create the game
-	m_Game = new Game(m_pd3dDevice, m_hWnd, m_hInst);
+	m_game = new Game(m_pd3d_device, m_hWnd, m_hInst);
 
 	return S_OK;
 }
 
 
-void Application::Render()
+void Application::render()
 {
 	// Just clear the backbuffer
-	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, m_ClearColour);
+	m_p_immediate_context->ClearRenderTargetView(m_p_render_target_view, m_ClearColour);
 
 	// Clear the depth stencil
-	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0, 0);
+	m_p_immediate_context->ClearDepthStencilView(m_p_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0, 0);
 
 	//Render the next frame from the game
-	if (m_Game) m_Game->Draw(m_pImmediateContext);
+	if (m_game) m_game->draw(m_p_immediate_context);
 
-	m_pSwapChain->Present(0, 0);
+	m_p_swap_chain->Present(0, 0);
 }
 
 
-bool Application::Update()
+bool Application::update()
 {
-	if (m_Game)
+	if (m_game)
 	{
-		return m_Game->Tick();
+		return m_game->tick();
 	}
 
 	return false;
 }
 
 
-void Application::CleanupDevice()
+void Application::cleanupDevice()
 {
 	//Destroy the Game instance
-	if (m_Game)
+	if (m_game)
 	{
-		delete m_Game;
-		m_Game = nullptr;
+		delete m_game;
+		m_game = nullptr;
 	}
 
 	//Tidy up all DirectX stuff
-	if (m_pImmediateContext) m_pImmediateContext->ClearState();
+	if (m_p_immediate_context) m_p_immediate_context->ClearState();
 
-	DESTROY(m_pRasterState);
-	DESTROY(m_pDepthStencil);
-	DESTROY(m_pDepthStencilView);
-	DESTROY(m_pRenderTargetView);
-	DESTROY(m_pSwapChain1);
-	DESTROY(m_pSwapChain);
-	DESTROY(m_pImmediateContext1);
-	DESTROY(m_pImmediateContext);
-	DESTROY(m_pd3dDevice1);
-	DESTROY(m_pd3dDevice);
+	DESTROY(m_p_raster_state);
+	DESTROY(m_p_depth_stencil);
+	DESTROY(m_p_depth_stencil_view);
+	DESTROY(m_p_render_target_view);
+	DESTROY(m_p_swap_chain_one);
+	DESTROY(m_p_swap_chain);
+	DESTROY(m_p_immediate_context_one);
+	DESTROY(m_p_immediate_context);
+	DESTROY(m_pd3d_device_one);
+	DESTROY(m_pd3d_device);
 }

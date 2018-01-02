@@ -1,6 +1,6 @@
-
 #include <memory>
 #include <string>
+
 
 class SwarmBotData
 {
@@ -11,9 +11,6 @@ public:
 	friend class SwarmManager;
 
 	friend class Separation;
-	friend class Alignment;
-	friend class Cohesion;
-	friend class Avoidance;
 	friend class PathFinding;
 
 	SwarmBotData();
@@ -21,31 +18,23 @@ public:
 
 protected:
 
-	void SetSepWeight(float _weight);
-	void SetFFWeight(float _weight);
-	void SetAliWeight(float _weight);
-	void SetCohWeight(float _weight);
-	void SetRunWeight(float _weight);
-	void SetPathWeight(float _weight);
+	void setSepWeight(float _weight);
+	void setPathWeight(float _weight);
 
-	void SetBotMaxSpeed(float _speed);
-	void SetMaxForce(float _force);
-	void SetNeighbourDist(float _dist);
-	void SetDesiredSep(float _sep);
+	void setBotMaxSpeed(float _speed);
+	void setMaxForce(float _force);
+	void setNeighbourDist(float _dist);
+	void setDesiredSep(float _sep);
 
 	// Behaviour Weights
-	float sepWeight;
-	float ffWeight;
-	float aliWeight;
-	float cohWeight;
-	float runWeight;
-	float pathWeight;
+	float sep_weight;
+	float path_weight;
 
 	// Swarm Bot Variables
 	float bot_max_speed;
 	float bot_max_force;
-	float neighbourDist;
-	float desiredSep;
+	float neighbour_distance;
+	float desired_separation;
 
 private:
 

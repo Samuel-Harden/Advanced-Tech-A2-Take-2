@@ -4,7 +4,6 @@
 #include "DrawData.h"
 #include "Vertex.h"
 #include "Camera.h"
-#include "Light.h"
 #include <fstream>
 #include <vector>
 
@@ -17,83 +16,84 @@
 using namespace DirectX;
 
 //default vertexshader
-ID3D11VertexShader*			VBGO::s_pVertexShader = nullptr;
+ID3D11VertexShader*			VBGO::s_vertex_shader = nullptr;
 //default vertex layout
-ID3D11InputLayout*			VBGO::s_pVertexLayout = nullptr;
+ID3D11InputLayout*			VBGO::s_vertex_layout = nullptr;
 //default pixelshader
-ID3D11PixelShader*			VBGO::s_pPixelShader = nullptr;
+ID3D11PixelShader*			VBGO::s_pixel_shader = nullptr;
 //default texture (white square)
-ID3D11ShaderResourceView*	VBGO::s_pTextureRV = nullptr;
+ID3D11ShaderResourceView*	VBGO::s_texture_resource_view = nullptr;
 //deafult const buffer
 //GPU side
-ID3D11Buffer*				VBGO::s_pConstantBuffer = nullptr;
+ID3D11Buffer*				VBGO::s_constant_buffer = nullptr;
 //CPU side	
 ConstantBuffer*				VBGO::s_pCB = nullptr;
 //default sampler
-ID3D11SamplerState*			VBGO::s_pSampler = nullptr;
+ID3D11SamplerState*			VBGO::s_sampler = nullptr;
 //default raster state
-ID3D11RasterizerState*		VBGO::s_pRasterState = nullptr;
+ID3D11RasterizerState*		VBGO::s_raster_state = nullptr;
+
 
 VBGO::VBGO()
 {
 	//set up Buffers
-	m_VertexBuffer = NULL;
-	m_IndexBuffer = NULL;
-	m_numPrims = 0;
+	m_vertex_buffer = NULL;
+	m_index_buffer = NULL;
+	m_num_prims = 0;
 
-	m_pVertexShader = nullptr;
-	m_pVertexLayout = nullptr;
-	m_pPixelShader = nullptr;
-	m_pConstantBuffer = nullptr;
+	m_vertex_shader = nullptr;
+	m_vertex_layout = nullptr;
+	m_pixel_shader = nullptr;
+	m_constant_buffer = nullptr;
 	m_pCB = nullptr;
-	m_pSampler = nullptr;
-	m_pRasterState = nullptr;
+	m_sampler = nullptr;
+	m_raster_state = nullptr;
 
 	m_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	//NOTE WE DON'T CREATE ANYTHING HERE
-	//WHATEVER INHERITS THIS WILL DO THAT
 }
+
 
 VBGO::~VBGO()
 {
 	//BUT WE DO TIDY THEM AWAY
-	DESTROY(m_VertexBuffer);
-	DESTROY(m_IndexBuffer);
-	DESTROY(m_pVertexShader);
-	DESTROY(m_pVertexLayout);
-	DESTROY(m_pPixelShader);
-	DESTROY(m_pConstantBuffer);
+	DESTROY(m_vertex_buffer);
+	DESTROY(m_index_buffer);
+	DESTROY(m_vertex_shader);
+	DESTROY(m_vertex_layout);
+	DESTROY(m_pixel_shader);
+	DESTROY(m_constant_buffer);
 	//if (m_pCB) delete m_pCB; delete this where created as there will know its type
-	DESTROY(m_pSampler);
-	DESTROY(m_pRasterState);
+	DESTROY(m_sampler);
+	DESTROY(m_raster_state);
 }
 
-void VBGO::Tick(GameData* _game_data)
+
+void VBGO::tick(GameData* _game_data)
 {
-	GameObject::Tick(_game_data);
+	GameObject::tick(_game_data);
 }
 
-void VBGO::Draw(DrawData* _draw_data)
+
+void VBGO::draw(DrawData* _draw_data)
 {
 	//set raster state
-	ID3D11RasterizerState* useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
+	ID3D11RasterizerState* useRasterS = m_raster_state ? m_raster_state : s_raster_state;
 	_draw_data->m_pd3dImmediateContext->RSSetState(useRasterS);
 
 	//set standard Constant Buffer to match this object
-	s_pCB->world = DirectX::XMMatrixTranspose(m_worldMat);
-	s_pCB->rot = DirectX::XMMatrixTranspose(m_rotMat);
+	s_pCB->world = DirectX::XMMatrixTranspose(m_world_matrix);
+	s_pCB->rot = DirectX::XMMatrixTranspose(m_rotation_matrix);
 
 	//Set vertex buffer
 	UINT stride = sizeof(myVertex);
 	UINT offset = 0;
-	_draw_data->m_pd3dImmediateContext->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
+	_draw_data->m_pd3dImmediateContext->IASetVertexBuffers(0, 1, &m_vertex_buffer, &stride, &offset);
 
 	// Set index buffer
-	_draw_data->m_pd3dImmediateContext->IASetIndexBuffer(m_IndexBuffer, m_IndexFormat, 0);
+	_draw_data->m_pd3dImmediateContext->IASetIndexBuffer(m_index_buffer, m_index_format, 0);
 
 	//update the Constant Buffer in classes that inherit from this then push to the GPU here
-	ID3D11Buffer* useCB = m_pConstantBuffer ? m_pConstantBuffer : s_pConstantBuffer;
+	ID3D11Buffer* useCB = m_constant_buffer ? m_constant_buffer : s_constant_buffer;
 	void* useCBData = m_pCB ? m_pCB : s_pCB;
 
 	_draw_data->m_pd3dImmediateContext->UpdateSubresource(useCB, 0, NULL, useCBData, 0, 0);
@@ -107,29 +107,27 @@ void VBGO::Draw(DrawData* _draw_data)
 
 	//set  vertex layout
 	//note that if you do use this you'll need to change the stride and offset above
-	ID3D11InputLayout* useLayout = m_pVertexLayout ? m_pVertexLayout : s_pVertexLayout;
+	ID3D11InputLayout* useLayout = m_vertex_layout ? m_vertex_layout : s_vertex_layout;
 	_draw_data->m_pd3dImmediateContext->IASetInputLayout(useLayout);
 
 	//set Vertex Shader
-	ID3D11VertexShader* useVS = m_pVertexShader ? m_pVertexShader : s_pVertexShader;
+	ID3D11VertexShader* useVS = m_vertex_shader ? m_vertex_shader : s_vertex_shader;
 	_draw_data->m_pd3dImmediateContext->VSSetShader(useVS, NULL, 0);
 
 	//set Pixel Shader
-	ID3D11PixelShader* usePS = m_pPixelShader ? m_pPixelShader : s_pPixelShader;
+	ID3D11PixelShader* usePS = m_pixel_shader ? m_pixel_shader : s_pixel_shader;
 	_draw_data->m_pd3dImmediateContext->PSSetShader(usePS, NULL, 0);
 
 	//set sampler
-	ID3D11SamplerState* useSample = m_pSampler ? m_pSampler : s_pSampler;
+	ID3D11SamplerState* useSample = m_sampler ? m_sampler : s_sampler;
 	_draw_data->m_pd3dImmediateContext->PSSetSamplers(0, 1, &useSample);
 
 	//and draw
-	_draw_data->m_pd3dImmediateContext->DrawIndexed(3 * m_numPrims, 0, 0);//number here will need to change depending on the primative topology!
+	_draw_data->m_pd3dImmediateContext->DrawIndexed(3 * m_num_prims, 0, 0);//number here will need to change depending on the primative topology!
 }
 
-//--------------------------------------------------------------------------------------
-// Compile the  shader
-//--------------------------------------------------------------------------------------
-HRESULT VBGO::CompileShaderFromFile(WCHAR* _szFileName, LPCSTR _szEntryPoint, LPCSTR _szShaderModel, ID3DBlob** _ppBlobOut)
+
+HRESULT VBGO::compileShaderFromFile(WCHAR* _szFileName, LPCSTR _szEntryPoint, LPCSTR _szShaderModel, ID3DBlob** _ppBlobOut)
 {
 	HRESULT hr = S_OK;
 
@@ -155,48 +153,24 @@ HRESULT VBGO::CompileShaderFromFile(WCHAR* _szFileName, LPCSTR _szEntryPoint, LP
 	return S_OK;
 }
 
-void VBGO::Init(ID3D11Device* _GD)
+void VBGO::init(ID3D11Device* _GD)
 {
 	using namespace std;
-	//set up all static stuff
-
 	
 	//default vertex shader
 	ID3DBlob* pVertexShaderBuffer = NULL;
-	HRESULT hr = CompileShaderFromFile(L"../Test/shader.fx", "VS", "vs_4_0_level_9_1", &pVertexShaderBuffer);
-	_GD->CreateVertexShader(pVertexShaderBuffer->GetBufferPointer(), pVertexShaderBuffer->GetBufferSize(), NULL, &s_pVertexShader);
+	HRESULT hr = compileShaderFromFile(L"../Test/shader.fx", "VS", "vs_4_0_level_9_1", &pVertexShaderBuffer);
+	_GD->CreateVertexShader(pVertexShaderBuffer->GetBufferPointer(), pVertexShaderBuffer->GetBufferSize(), NULL, &s_vertex_shader);
 
 	//default pixelshader
 	ID3DBlob* pPixelShaderBuffer = NULL;
-	hr = CompileShaderFromFile(L"../Test/shader.fx", "PS", "ps_4_0_level_9_1", &pPixelShaderBuffer);
-	_GD->CreatePixelShader(pPixelShaderBuffer->GetBufferPointer(), pPixelShaderBuffer->GetBufferSize(), NULL, &s_pPixelShader);
+	hr = compileShaderFromFile(L"../Test/shader.fx", "PS", "ps_4_0_level_9_1", &pPixelShaderBuffer);
+	_GD->CreatePixelShader(pPixelShaderBuffer->GetBufferPointer(), pPixelShaderBuffer->GetBufferSize(), NULL, &s_pixel_shader);
 	
 	//default vertex layout
 	_GD->CreateInputLayout(myVertexLayout, ARRAYSIZE(myVertexLayout), pVertexShaderBuffer->GetBufferPointer(),
-		pVertexShaderBuffer->GetBufferSize(), &s_pVertexLayout);
+		pVertexShaderBuffer->GetBufferSize(), &s_vertex_layout);
 	
-
-
-
-	/*
-		// Create Shaders
-	ifstream vsfile("VertexShader.cso", ios::binary);
-	ifstream psfile("PixelShader.cso", ios::binary);
-
-	vector<char> vsData = { istreambuf_iterator<char>(vsfile), istreambuf_iterator <char>() };
-	vector<char> psData = { istreambuf_iterator<char>(psfile), istreambuf_iterator <char>() };
-
-	_GD->CreateVertexShader(vsData.data(), vsData.size(), nullptr, &s_pVertexShader);
-	_GD->CreatePixelShader(psData.data(), psData.size(), nullptr, &s_pPixelShader);
-	//create input layouts
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	_GD->CreateInputLayout(layout, 2, vsData.data(), vsData.size(), &s_pVertexLayout);
-	*/
-
 	//default const buffer
 	//GPU side
 	D3D11_BUFFER_DESC bd;
@@ -205,7 +179,7 @@ void VBGO::Init(ID3D11Device* _GD)
 	bd.ByteWidth = sizeof(ConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-	hr = _GD->CreateBuffer(&bd, NULL, &s_pConstantBuffer);
+	hr = _GD->CreateBuffer(&bd, NULL, &s_constant_buffer);
 	//CPU side
 	s_pCB = new ConstantBuffer();
 	ZeroMemory(s_pCB, sizeof(ConstantBuffer));
@@ -223,7 +197,7 @@ void VBGO::Init(ID3D11Device* _GD)
 	SamDesc.BorderColor[0] = SamDesc.BorderColor[1] = SamDesc.BorderColor[2] = SamDesc.BorderColor[3] = 0;
 	SamDesc.MinLOD = 0;
 	SamDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	hr = _GD->CreateSamplerState(&SamDesc, &s_pSampler);
+	hr = _GD->CreateSamplerState(&SamDesc, &s_sampler);
 
 	//Setup Raster State
 	D3D11_RASTERIZER_DESC rasterDesc;
@@ -239,45 +213,38 @@ void VBGO::Init(ID3D11Device* _GD)
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.
-	hr = _GD->CreateRasterizerState(&rasterDesc, &s_pRasterState);
+	hr = _GD->CreateRasterizerState(&rasterDesc, &s_raster_state);
 }
 
 
-void VBGO::UpdateConstantBuffer(DrawData* _draw_data)
+void VBGO::updateConstantBuffer(DrawData* _draw_data)
 {
-	//you'll need your own version of this if you use a different Constant Buffer
 	s_pCB->view = XMMatrixTranspose(_draw_data->m_cam->getViewMatrix());
 	s_pCB->projection = XMMatrixTranspose(_draw_data->m_cam->getProjMatrix());
-
-	/*// Lighting
-	if (_draw_data->m_light)
-	{
-	s_pCB->lightCol = _draw_data->m_light->GetColour();
-	s_pCB->lightPos = _draw_data->m_light->GetPos();
-	s_pCB->ambientCol = _draw_data->m_light->GetAmbCol();
-	}*/
 }
 
 
-void VBGO::CleanUp()
+void VBGO::cleanUp()
 {
 	//clear away all the static objects
-	DESTROY(s_pVertexShader);
-	DESTROY(s_pVertexLayout);
-	DESTROY(s_pPixelShader);
-	DESTROY(s_pTextureRV);
-	DESTROY(s_pConstantBuffer);
+	DESTROY(s_vertex_shader);
+	DESTROY(s_vertex_layout);
+	DESTROY(s_pixel_shader);
+	DESTROY(s_texture_resource_view);
+	DESTROY(s_constant_buffer);
+
 	if (s_pCB)
 	{
 		delete s_pCB;
 		s_pCB = nullptr;
 	}
-	DESTROY(s_pSampler);
-	DESTROY(s_pRasterState);
+
+	DESTROY(s_sampler);
+	DESTROY(s_raster_state);
 }
 
 
-void VBGO::BuildIB(ID3D11Device* _GD, void* _indices)
+void VBGO::buildIB(ID3D11Device* _GD, void* _indices)
 {
 	//structures from creating buffers
 	D3D11_BUFFER_DESC bd;
@@ -287,15 +254,15 @@ void VBGO::BuildIB(ID3D11Device* _GD, void* _indices)
 	//build index buffer
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(WORD) * 3 * m_numPrims;
+	bd.ByteWidth = sizeof(WORD) * 3 * m_num_prims;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	InitData.pSysMem = _indices;
-	hr = _GD->CreateBuffer(&bd, &InitData, &m_IndexBuffer);
+	hr = _GD->CreateBuffer(&bd, &InitData, &m_index_buffer);
 }
 
 
-void VBGO::BuildVB(ID3D11Device* _GD, int _numVerts, void* _vertices)
+void VBGO::buildVB(ID3D11Device* _GD, int _numVerts, void* _vertices)
 {
 	//structures from creating buffers
 	D3D11_BUFFER_DESC bd;
@@ -310,5 +277,5 @@ void VBGO::BuildVB(ID3D11Device* _GD, int _numVerts, void* _vertices)
 	bd.CPUAccessFlags = 0;
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = _vertices;
-	hr = _GD->CreateBuffer(&bd, &InitData, &m_VertexBuffer);
+	hr = _GD->CreateBuffer(&bd, &InitData, &m_vertex_buffer);
 }
