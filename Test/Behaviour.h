@@ -22,9 +22,7 @@ protected:
 
 	virtual DirectX::XMFLOAT3 CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<SwarmBot*>& _bots);
 
-	virtual DirectX::XMFLOAT3 CalculateBehaviour2(SwarmBot* _bot, SwarmBotData* _SBD);
-
-	virtual DirectX::XMFLOAT3 CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _wpPos);
+	virtual DirectX::XMFLOAT3 CalculateBehaviour2(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _wpPos);
 
 private:
 

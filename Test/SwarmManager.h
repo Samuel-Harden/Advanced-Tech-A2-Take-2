@@ -17,25 +17,26 @@ class Behaviour;
 class SwarmManager
 {
 public:
-	SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots);
+	SwarmManager(ID3D11Device* _pd3dDevice);
 	~SwarmManager();
 
 	void tick(GameData* _game_data);
 	void draw(DrawData* _draw_data);
 
-	float getZoneCenter();
+	float getZoneCenter() const;
 
 protected:
 
 private:
 
-	void generateZones(ID3D11Device* _pd3dDevice, const int& _max_bots);
+	void generateZones(ID3D11Device* _pd3dDevice);
 	void generateBehaviours();
-	void generateWaypoints(int _max_bots);
+	void generateWaypoints();
 	void generateBotData();
 	void updateZones(int _zone, GameData* _game_data);
 
 	void updateBotPositions(int _zone);
+	void updateBotPositions2(int _zone);
 	void setZonesForUpdate(int _zone, std::vector<int> _update_zones);
 
 	bool zoneValidation(int _zone);
@@ -59,6 +60,13 @@ private:
 	int no_zones;
 	int current_zone;
 
+	// No of zones (x & y)
 	int grid_width;
 	int grid_height;
+
+	// actual size of a zone
+	float zone_width;
+	float zone_height;
+
+	int max_bots;
 };

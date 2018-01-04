@@ -2,6 +2,7 @@
 
 using namespace std::chrono;
 
+
 FrameTimer::FrameTimer()
 {
 	last = steady_clock::now();

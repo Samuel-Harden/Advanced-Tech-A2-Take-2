@@ -2,10 +2,10 @@
   C:\Program Files (x86)\Windows Kits\10\Include\10.0.16299.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 d:\documents\github\advanced-tech-a2-take-2\test\Behaviour.h(8): warning C4099: 'GameData': type name first seen using 'struct' now seen using 'class'
   d:\documents\github\advanced-tech-a2-take-2\test\Zone.h(8): note: see declaration of 'GameData'
-SwarmManager.cpp(134): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+SwarmManager.cpp(135): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Generating code
-  151 of 700 functions (21.6%) were compiled, the rest were copied from previous compilation.
+  152 of 705 functions (21.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    7 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Test.vcxproj -> D:\Documents\GitHub\Advanced-Tech-A2-Take-2\x64\Release\Test.exe

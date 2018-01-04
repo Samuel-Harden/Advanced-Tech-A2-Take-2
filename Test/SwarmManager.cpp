@@ -13,18 +13,19 @@
 #include "PathFinding.h"
 
 
-SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice, int _max_bots) :
-	no_zones(36),
-	grid_width(6),
-	grid_height(6),
+SwarmManager::SwarmManager(ID3D11Device* _pd3dDevice) :
+	max_bots(10000),
+	no_zones(12),
+	grid_width(3),
+	grid_height(4),
 	current_zone(0)
 {
 	m_zones.reserve(no_zones),
 	waypoints.reserve(4);
 
-	generateWaypoints(_max_bots);
+	generateWaypoints();
 
-	generateZones(_pd3dDevice, _max_bots);
+	generateZones(_pd3dDevice);
 
 	generateBehaviours();
 	generateBotData();
@@ -70,20 +71,20 @@ void SwarmManager::draw(DrawData* _draw_data)
 }
 
 
-void SwarmManager::generateZones(ID3D11Device* _pd3dDevice, const int& _max_bots)
+void SwarmManager::generateZones(ID3D11Device* _pd3dDevice)
 {
 	XMFLOAT2 pos = Vector2Zero;
 
-	int no_bots = _max_bots / no_zones;
+	int no_bots = max_bots / no_zones;
 
 	int zone_ID = 0;
 	int row = 0;
 	int col = 0;
 
-	float zone_size_x = max_area / grid_width;
-	float zone_size_y = max_area / grid_height;
+	zone_width = max_area / grid_width;
+	zone_height = max_area / grid_height;
 
-	XMFLOAT2 size = { zone_size_x, zone_size_y };
+	XMFLOAT2 size = { zone_width, zone_height };
 
 	// Populate each zone
 	for (int i = 0; i < no_zones; i++)
@@ -92,13 +93,13 @@ void SwarmManager::generateZones(ID3D11Device* _pd3dDevice, const int& _max_bots
 
 		m_zones.push_back(zone);
 		zone_ID++;
-		pos.x += zone_size_x;
+		pos.x += zone_width;
 		col++;
 
 		if (pos.x >= max_area)
 		{
 			pos.x = 0.0f;
-			pos.y += zone_size_y;
+			pos.y += zone_height;
 			col = 0;
 			row++;
 		}
@@ -122,22 +123,22 @@ void SwarmManager::generateBotData()
 
 	swarm_data->desired_separation    =  5.0f;
 	swarm_data->bot_max_force         = 0.02f;
-	swarm_data->bot_max_speed         =  1.0f;
-	swarm_data->neighbour_distance    = 10.0f;
-	swarm_data->path_weight           = -0.1f;
-	swarm_data->sep_weight            =  50.0f;
+	swarm_data->bot_max_speed         =  0.6f;
+	swarm_data->neighbour_distance    = 20.0f;
+	swarm_data->path_weight           = -1.0f;
+	swarm_data->sep_weight            =  10.0f;
 }
 
 
-void SwarmManager::generateWaypoints(int _max_bots)
+void SwarmManager::generateWaypoints()
 {
-	max_area = _max_bots / 40;
+	max_area = max_bots / 10;
 
 	// Create a 20% offset from the edge of the grid
 	float min_pos = max_area / 5;
 	float max_pos = max_area / 5 * 4;
 
-	XMFLOAT3 pos_1 = { min_pos, min_pos, 0.0f}; // Bottom Left
+	XMFLOAT3 pos_1 = { min_pos, min_pos, 0.0f };    // Bottom Left
 	waypoints.push_back(pos_1);
 
 	XMFLOAT3 pos_2 = { max_pos, max_pos, 0.0f };    // Top Right
@@ -172,7 +173,8 @@ void SwarmManager::updateZones(int _zone, GameData* _game_data)
 		m_zones[i]->tick(swarm_data, _game_data);
 	}
 
-	updateBotPositions(_zone);
+	//updateBotPositions(_zone);
+	updateBotPositions2(_zone);
 }
 
 
@@ -183,6 +185,7 @@ void SwarmManager::setZonesForUpdate(int _zone, std::vector<int> _update_zones)
 }
 
 
+// OLD FUNCTION using 'updateBotPos2' now (more Accurate)
 // Move bots to new zone if needed...
 void SwarmManager::updateBotPositions(int _zone)
 {
@@ -327,13 +330,88 @@ void SwarmManager::updateBotPositions(int _zone)
 				return;
 			}
 		}
-		// if none are true then check bot is in the correct zone,
-		// if not move bot to new random pos within this zone...
 	}
 }
 
 
-float SwarmManager::getZoneCenter()
+// Updated function, way more accurate!
+void SwarmManager::updateBotPositions2(int _zone)
+{
+	// loop through all bots
+	for (int i = 0; i < m_zones[_zone]->getSwarm().size(); i++)
+	{
+		//check if there is a bot in this pos
+		if (m_zones[_zone]->getBot(i) != nullptr)
+		{
+			XMFLOAT2 zone_pos = m_zones[_zone]->getPos();
+			XMFLOAT3 bot_pos  = m_zones[_zone]->getBot(i)->getPos();
+
+			// If im already in the correct zone SKIP
+			if (bot_pos.x >= zone_pos.x && bot_pos.x < zone_pos.x + zone_width &&
+				bot_pos.y >= zone_pos.y && bot_pos.y < zone_pos.y + zone_height)
+			{
+				goto skip;
+			}
+
+			// if bot is in bounds of entire Grid
+			// If its not, its still part of x zone, so will still
+			// be updated and move back in bounds towards a waypoint
+			if (bot_pos.x >= 0 && bot_pos.x <(zone_width * grid_width) &&
+				bot_pos.y >= 0 && bot_pos.y <(zone_height * grid_height))
+			{
+				bool row_found = false;
+				bool col_found = false;
+
+				int row = 0;
+				int col = 0;
+
+				float row_pos = 0.0f;
+				float col_pos = 0.0f;
+
+				// Find the Row and Column of new Zone
+				while (!col_found)
+				{
+					if (bot_pos.x >= col_pos && bot_pos.x < col_pos + zone_width)
+					{
+						col_found = true;
+						break;
+					}
+
+					col_pos += zone_width;
+					col++;
+				}
+
+				while (!row_found)
+				{
+					if (bot_pos.y >= row_pos && bot_pos.y < row_pos + zone_height)
+					{
+						row_found = true;
+						break;
+					}
+
+					row_pos += zone_height;
+					row++;
+				}
+
+				int new_zone = grid_width * row + col;
+
+				// If bot has moved, update the zones
+				if (new_zone != _zone)
+				{
+					moveBot(i, _zone, new_zone);
+				}
+
+				skip:
+				{
+					// do nothing, already in correct Zone!
+				}
+			}
+		}
+	}
+}
+
+
+float SwarmManager::getZoneCenter() const
 {
 	return max_area / 2;
 }

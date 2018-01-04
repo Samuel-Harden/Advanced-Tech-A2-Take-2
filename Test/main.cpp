@@ -9,7 +9,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	//add a Debug Console to which cout is directed whilst in DEBUG
 	if (AllocConsole()) {
 		freopen("CONOUT$", "w", stdout);
@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 		std::cout << "Advanced Tech - Debug Console" << std::endl;
 	}
-#endif DEBUG
+//#endif DEBUG
 
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pScmdline);

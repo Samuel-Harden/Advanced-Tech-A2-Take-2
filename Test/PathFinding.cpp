@@ -11,14 +11,13 @@ PathFinding::PathFinding()
 }
 
 
-
 PathFinding::~PathFinding()
 {
 
 }
 
 
-XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<XMFLOAT3>& _wpPos)
+XMFLOAT3 PathFinding::CalculateBehaviour2(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<XMFLOAT3>& _wpPos)
 {
 	XMFLOAT3 steer = Vector3Zero;
 	int count = 0;
@@ -77,7 +76,6 @@ XMFLOAT3 PathFinding::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, st
 		steer_vector = XMVector3ClampLength(steer_vector, 0.0f, _SBD->bot_max_speed);
 
 		XMVector3Normalize(steer_vector);
-
 
 		// Implement Reynolds: steering = desired - velocity
 

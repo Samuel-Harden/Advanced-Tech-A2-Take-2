@@ -22,7 +22,8 @@ public:
 
 	void tick(SwarmBotData* _SBD, GameData* _game_data);
 
-	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
+	void run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data,
+		std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _waypoint);
 
 	bool getIsActive() const;
 	int getWayPointID() const;
@@ -36,9 +37,6 @@ protected:
 	myVertex* m_vertices;
 
 private:
-
-	void setRandPos(XMFLOAT2 _min, XMFLOAT2 _max);
-	float randomFloat(float _min, float _max);
 
 	void applyForce(XMFLOAT3& force);
 

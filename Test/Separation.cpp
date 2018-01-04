@@ -4,19 +4,16 @@
 #include "SwarmBotData.h"
 
 
-
 Separation::Separation()
 {
 
 }
 
 
-
 Separation::~Separation()
 {
 
 }
-
 
 
 // Seperation
@@ -53,7 +50,6 @@ DirectX::XMFLOAT3 Separation::CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* 
 				diff.x = (diff.x / d); // Weight by distance
 				diff.y = (diff.y / d);
 				diff.z = (diff.z / d);
-
 
 				steer.x = (steer.x + diff.x);
 				steer.y = (steer.y + diff.y);

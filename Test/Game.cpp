@@ -59,7 +59,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HWND _hWnd, HINSTANCE _hInstance)
 	m_draw_data->m_pd3dImmediateContext = nullptr;
 	m_draw_data->m_cam = m_camera;
 
-	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice, 40000);
+	swarm_manager = std::make_unique<SwarmManager>(_pd3dDevice);
 
 	bot_cam->setPos({ swarm_manager->getZoneCenter(), swarm_manager->getZoneCenter(), 0.0f });
 
@@ -133,4 +133,8 @@ void Game::draw(ID3D11DeviceContext* _pd3dImmediateContext)
 	swarm_manager->draw(m_draw_data);
 
 	m_camera->draw(m_draw_data);
+
+	// To see time between updates
+	const float dt = ft.Mark();
+	std::cout << dt << std::endl;
 };

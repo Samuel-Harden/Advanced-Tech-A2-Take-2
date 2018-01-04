@@ -23,14 +23,7 @@ DirectX::XMFLOAT3 Behaviour::CalculateBehaviour1(SwarmBot* _bot, SwarmBotData* _
 }
 
 
-DirectX::XMFLOAT3 Behaviour::CalculateBehaviour2(SwarmBot* _bot, SwarmBotData* _SBD)
-{
-	// Default Value...
-	return DirectX::Vector3Zero;
-}
-
-
-DirectX::XMFLOAT3 Behaviour::CalculateBehaviour3(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _waypoint)
+DirectX::XMFLOAT3 Behaviour::CalculateBehaviour2(SwarmBot* _bot, SwarmBotData* _SBD, std::vector<DirectX::XMFLOAT3>& _waypoint)
 {
 	// Default Value...
 	return DirectX::Vector3Zero;

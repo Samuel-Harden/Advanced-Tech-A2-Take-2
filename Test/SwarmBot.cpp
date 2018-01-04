@@ -11,7 +11,7 @@ SwarmBot::SwarmBot()
 	: is_active(true),
 	new_pos(false),
 	waypoint_ID(0),
-	acceleration(DirectX::Vector3Zero)
+	acceleration(Vector3Zero)
 {
 
 }
@@ -21,9 +21,9 @@ SwarmBot::SwarmBot(XMFLOAT2 _min_pos, XMFLOAT2 _max_pos, float _waypoint)
 	: is_active(true),
 	new_pos(false),
 	waypoint_ID(_waypoint),
-	acceleration(DirectX::Vector3Zero)
+	acceleration(Vector3Zero)
 {
-	setRandPos(_min_pos, _max_pos);
+	m_pos = setRandPos(_min_pos, _max_pos);
 }
 
 
@@ -119,19 +119,18 @@ void SwarmBot::tick(SwarmBotData* _SBD, GameData* _game_data)
 	XMMATRIX trans_mat = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
 	m_world_matrix = scaleMat * m_rotation_matrix * trans_mat;
-
-	//acceleration = Vector3Zero;
 }
 
 
-void SwarmBot::run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data, std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
+void SwarmBot::run(std::vector<SwarmBot*>& _bots, SwarmBotData* _swarm_data,
+	std::vector<Behaviour*> _behaviours, std::vector<DirectX::XMFLOAT3>& _wpPos)
 {
 	using namespace DirectX;
 
 	// Behaviours...
-	XMFLOAT3 sep = _behaviours[0]->CalculateBehaviour1(this, _swarm_data, _bots);    // Seperation
+	XMFLOAT3 sep = _behaviours[0]->CalculateBehaviour1(this, _swarm_data, _bots);// Separation
 
-	XMFLOAT3 path_finding = _behaviours[1]->CalculateBehaviour3(this, _swarm_data, _wpPos);    // Path Finding
+	XMFLOAT3 path_finding = _behaviours[1]->CalculateBehaviour2(this, _swarm_data, _wpPos);// Path Finding
 
 	sep.x *= _swarm_data->sep_weight;
 	sep.y *= _swarm_data->sep_weight;
@@ -178,22 +177,4 @@ DirectX::XMFLOAT3 SwarmBot::getVelocity() const
 void SwarmBot::setWayPointID(int& _newID)
 {
 	waypoint_ID = _newID;
-}
-
-
-void SwarmBot::setRandPos(XMFLOAT2 _min, XMFLOAT2 _max)
-{
-	// Set random starting positon, inside the Designated zone
-	float pos_x = randomFloat(_min.x, _max.x);
-	float pos_y = randomFloat(_min.y, _max.y);
-	float pos_z = 0.0f; // Only using X and Y
-
-	m_pos = XMFLOAT3(pos_x, pos_y, pos_z);
-}
-
-
-float SwarmBot::randomFloat(float _min, float _max)
-{
-	float r = (float)rand() / (float)RAND_MAX;
-	return _min + r * (_max - _min);
 }
